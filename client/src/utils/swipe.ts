@@ -1,0 +1,3 @@
+/**
+ * Reprensents a swipe event
+ */
