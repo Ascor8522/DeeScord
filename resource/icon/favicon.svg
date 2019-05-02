@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg width="100%" height="100%" viewBox="0 0 512 512" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:1.41421;">
+    <g transform="matrix(1,0,0,1,-577,0)">
+        <g id="Artboard1" transform="matrix(1,0,0,1,57,0)">
+            <rect x="520" y="0" width="512" height="512" style="fill:none;"/>
+            <clipPath id="_clip1">
+                <rect x="520" y="0" width="512" height="512"/>
+            </clipPath>
+            <g clip-path="url(#_clip1)">
+                <g transform="matrix(1,0,0,1,1071,10)">
+                    <g transform="matrix(1.38378,0,0,1.38378,-675.541,-66.3514)">
+                        <path d="M460,132.5C460,81.448 418.552,40 367.5,40L182.5,40C131.448,40 90,81.448 90,132.5L90,317.5C90,368.552 131.448,410 182.5,410L367.5,410C418.552,410 460,368.552 460,317.5L460,132.5Z" style="fill:rgb(32,34,37);"/>
+                    </g>
+                    <g transform="matrix(1.72632,0,0,1.72632,-700.684,-134.789)">
+                        <g transform="matrix(5.9375,0,0,5.9375,140,125)">
+                            <path d="M25.977,12.213C25.95,13.6 25.641,14.908 25.094,16.102C27.977,16.582 28,18.93 28,20C28,20.992 28,24 24.004,24L20,24C17.395,24 15.062,25.258 13.602,27.203C12.633,26.469 12,25.305 12,24L12,20C12,19.209 12.141,18.586 12.359,18.072C12.242,18.051 12.125,18 12,18L8.203,18C8.074,18.619 8.004,19.281 8.004,20L8.004,24C8.004,28.418 11.582,32 16,32C16,29.789 17.789,28 20,28L24.004,28C28,28 32,25.75 32,20C32,15.107 29.219,12.84 25.977,12.213Z" style="fill:white;fill-rule:nonzero;"/>
+                        </g>
+                        <g transform="matrix(5.9375,0,0,5.9375,140,125)">
+                            <path d="M16,4C17.492,4 20,4.52 20,8L20,12C20,13.309 19.367,14.471 18.398,15.201C16.938,13.26 14.609,12 12,12L8.004,12C4,12 4,8.99 4,8C4,6.805 4,4 8.004,4L16,4M16,0L8.004,0C4,0 0,2.125 0,8C0,13.75 4,16 8.004,16L12,16C14.211,16 16,17.793 16,20C20.418,20 24.004,16.418 24.004,12L24.004,8C24.004,2.479 20,0 16,0Z" style="fill:white;fill-rule:nonzero;"/>
+                        </g>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>
