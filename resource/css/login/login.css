@@ -1,0 +1,21 @@
+form {
+	height: min-content;
+	max-width: 100vw;
+	margin: auto;
+	background-color: var(--dark);
+	padding: 20px;
+	zoom: 1.5;
+}
+
+form > *{
+	display: block;
+	width: -webkit-fill-available;
+}
+
+form > input[type=text], form > input[type=password] {
+	background-color: var(--light)
+}
+
+form > label, form > a {
+	color: var(--text);
+}

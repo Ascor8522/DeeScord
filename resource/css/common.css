@@ -1,0 +1,154 @@
+@font-face {
+	font-family: Whitney;
+	font-style: normal;
+	src: url("/resource/font/Whitney\ Bold\ Regular.ttf");
+	font-weight: 700;
+}
+
+@font-face {
+	font-family: Whitney;
+	font-style: normal;
+	src: url("/resource/font/Whitney\ Book\ Regular.ttf");
+	font-weight: 300;
+}
+
+@font-face {
+	font-family: Whitney;
+	font-style: normal;
+	src: url("/resource/font/Whitney\ Medium\ Regular.ttf");
+	font-weight: 500;
+}
+
+@font-face {
+	font-family: Whitney;
+	font-style: normal;
+	src: url("/resource/font/Whitney\ Semibold\ Regular.ttf");
+	font-weight: 600;
+}
+
+:root {
+	--darkest: #202225;
+	--dark: #2B2C31;
+	--medium: #2F3136;
+	--main: #36393F;
+	--light: #484C52;
+	--lighter: #7F8186;
+
+	--text: #ffffffb3;
+
+	--accent: #7289DA;
+	--accentDarker: #5d76cf;
+	--accentDarkest: #4d66c0;
+
+	--accentGreen: #3CA374;
+	--accentGreenDarker: #369368;
+	--accentGreenDarkest: #257a52;
+
+	--online: #43B581;
+	--dnd: #F04747;
+	--idle: #FAA61A;
+}
+
+* {
+	font-family: Whitney, "Helvetica Neue", Helvetica, Arial, sans-serif;
+	user-select: none;
+}
+
+body, main {
+	background-color: var(--main);
+	display: flex;
+	flex-direction: row;
+	flex: 1 1 auto;
+	height: -webkit-fill-available;
+	margin: 0px;
+	overflow: hidden;
+	padding: 0px;
+	width: 100%;
+	justify-content: space-around;
+	align-items: stretch;
+}
+
+.noscript {
+	margin: auto;
+	color: red;
+	font-size: xx-large;
+	font-weight: bolder;
+}
+
+button, input[type=button], input[type=submit] {
+	border: none;
+	border-radius: 5px;
+	color: rgb(255, 255, 255);
+	cursor: pointer;
+	display: inline-block;
+	font-size: 14px;
+	height: 32px;
+	justify-content: center;
+	line-height: 16px;
+	margin: auto;
+	margin-top: 10px;
+	margin-bottom: 10px;
+	min-height: 32px;
+	min-width: 60px;
+	outline: none;
+	padding-bottom: 2px;
+	padding-left: 16px;
+	padding-right: 16px;
+	padding-top: 2px;
+	text-align: center;
+	transition: background-color .17s ease, color .17s ease;
+	user-select: none;
+	box-shadow: 0px 0px 2px #00000080;
+}
+
+button:not(:disabled):active, input[type=button]:not(:disabled):active, input[type=submit]:not(:disabled):active {
+	position: relative;
+	top: 2px;
+}
+
+*:disabled {
+	filter: opacity(30%);
+}
+
+input {
+	background-color: transparent;
+	border: none;
+	outline: none;
+	color: var(--text);
+	cursor: pointer;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	font-weight: bold;
+	font-size: 16px;
+	line-height: 16px;
+	border-radius: 5px;
+	padding: 5px;
+}
+
+input:focus {
+	background-color: var(--light);
+}
+
+.blue {
+	background-color: var(--accent);
+}
+
+.blue:hover {
+	background-color: var(--accentDarker);
+}
+
+.blue:active {
+	background-color: var(--accentDarkest);
+}
+
+.green {
+	background-color: var(--accentGreen);
+}
+
+.green:hover {
+	background-color: var(--accentGreenDarker);
+}
+
+.green:active {
+	background-color: var(--accentGreenDarkest);
+}

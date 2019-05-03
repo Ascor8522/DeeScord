@@ -1,0 +1,52 @@
+div.channelIcon {
+	display: inline-block;
+	vertical-align: bottom;
+	background-image: url("/resource/icon/hastag.svg");
+	width: 24px;
+	height: 24px;
+}
+c-channel>div:last-child {
+	margin-left: 5px;
+	text-overflow: ellipsis;
+	display: inline-block;
+	max-width: 80%;
+	position: relative;
+	bottom: 2px;
+}
+
+c-channel:hover, .columnInfo:hover {
+	background-color: #00000010;
+	/* background-color: var(--dark); */
+}
+
+c-channel.current, c-user:hover {
+	background-color: var(--light);
+}
+
+c-channel.unread:before {
+	content: " ";
+	background-color: var(--text);
+	width: 10px;
+	height: 10px;
+	display: block;
+	float: left;
+	position: relative;
+	right: 7px;
+	top: 7px;
+	border-top-right-radius: 100%;
+	border-bottom-right-radius: 100%;
+}
+
+#channelsList > button {
+	display: block;
+}
+
+#disconnect {
+	float: left;
+	margin-left: 15px;
+}
+
+#userNameChange {
+	float: right;
+	margin-right: 15px;
+}

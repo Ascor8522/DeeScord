@@ -1,0 +1,25 @@
+#popup {
+	background-color: #0000;
+	border-radius: 100vw;
+	height: 0%;
+	position: absolute;
+	right: 50%;
+	top: 50%;
+	transition: all 0.5s ease;
+	width: 0%;
+}
+
+#popup.active {
+	background-color: #00000080;
+	border-radius: 0px;
+	height: 100%;
+	right: 0%;
+	top: 0%;
+	width: 100%;
+}
+
+.popup {
+	background-color: var(--light);
+	height: 60vh;
+	width: 40vw;
+}

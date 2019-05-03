@@ -1,0 +1,101 @@
+.column {
+	display: flex;
+	flex-direction: column;
+	flex: 1 1 auto;
+	width: calc(15vw + 0px);
+}
+
+.side {
+	background-color: var(--medium);
+	width: 15vw;
+	min-width: 250px;
+	max-width: 15vw;
+}
+
+.center.column {
+	display: flex;
+	flex: 1 1 auto;
+	background-color: var(--main);
+	min-width: 0px;
+}
+
+.column>.columnInfo {
+	color: var(--text);
+	cursor: pointer;
+	text-overflow: ellipsis;
+	flex: 0 0 auto;
+	overflow: hidden;
+	min-height: 64px;
+	line-height: 64px;
+	width: 100%;
+	text-align: center;
+}
+
+.center.column .columnInfo {
+	text-align: left;
+}
+
+.column>*{
+	flex: 1 1 auto;
+	overflow-y: auto;
+}
+
+.column>*:last-child {
+	flex: 0 0 auto !important;
+	overflow: hidden;
+}
+
+.fill {
+	height: 300px;;
+}
+
+.columnInfo {
+	box-shadow: 0 1px 0 rgba(0,0,0,.2), 0 1.5px 0 rgba(0,0,0,.05), 0 2px 0 rgba(0,0,0,.05);
+	margin-bottom: 0px;
+	min-width: 64px;
+}
+
+.nameTopicDivider {
+	margin-right: 10px;
+	margin-left: 10px;
+}
+
+.center .channelIcon {
+	margin-right: 5px;
+	vertical-align: middle;
+	position: relative;
+	bottom: 4px;
+	margin-left: 20px;
+}
+
+c-channel, c-user {
+	color: var(--text);
+	cursor: pointer;
+	border-radius: 5px;
+	display: block;
+	line-height: 20px;
+	margin: auto;
+	padding: 7px;
+	width: 80%;
+}
+
+#channelDelete {
+	background-color: transparent;
+	height: 20px;
+	margin: 0px;
+	margin-left: 20px;
+	max-height: 20px;
+	max-width: 15px;
+	transition: 0.2s background-color ease-in-out;
+	vertical-align: middle;
+}
+
+#channelDelete:not(:disabled):hover {
+	background-color: var(--dark);
+}
+
+@media screen and (max-width: 768px) {
+	.side {
+		display: none;
+	}
+}

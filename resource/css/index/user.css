@@ -1,0 +1,61 @@
+#usersList {
+	padding-top: 10px;
+}
+
+c-user>div {
+	display: inline-block;
+	line-height: 24px;
+}
+
+c-user>div:first-child {
+	height: fit-content;
+}
+
+c-user>div:last-child {
+	margin-left: 10px;
+	display: inline;
+	text-overflow: ellipsis;
+	line-height: 15px;
+	position: relative;
+	bottom: 8px;
+}
+
+c-user .userIcon {
+	height: 30px;
+	width: 30px;
+	object-fit: cover;
+	border-radius: 100%;
+}
+
+c-user>div>div {
+	border-radius: 100%;
+	bottom: 14px;
+	height: 12px;
+	left: 22px;
+	position: relative;
+	width: 12px;
+}
+
+c-user.online>div>div {
+	background-color: var(--online);
+}
+
+c-user.offline>div>div {
+	display: none;
+}
+
+c-user.idle>div>div {
+	background-color: var(--idle);
+}
+
+c-user.dnd>div>div {
+	background-color: var(--dnd);
+}
+
+c-user.offline>div {
+	filter: brightness(60%);
+}
+
+c-user.offline:hover>div {
+	filter: brightness(100%);
+}

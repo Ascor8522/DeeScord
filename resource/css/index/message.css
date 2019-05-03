@@ -1,0 +1,134 @@
+c-message {
+	display: flex;
+	margin: 10px;
+	margin-top: 10px;
+	float: left;
+	clear: both;
+}
+
+c-message > * {
+	display: inline-block;
+}
+
+c-message .userIcon {
+	width: 40px;
+	height: 40px;
+	border-radius: 100%;
+	object-fit: cover;
+}
+
+c-message .userIcon:hover {
+	cursor: pointer;
+}
+
+c-message .messageAuthor {
+	display: inline-block;
+	font-size: 16px;
+	font-weight: bolder;
+	margin-right: 10px;
+	white-space: nowrap;
+}
+
+c-message .messageAuthor:hover {
+	text-decoration: underline;
+	cursor: pointer;
+}
+
+c-message .messageTimestamp {
+	display: inline-block;
+	font-size: 12px;
+	font-weight: 400;
+	white-space: nowrap;
+}
+c-message .messageContent {
+	font-size: 15px;
+	font-weight: 300;
+}
+
+c-message .messageContent > pre {
+	background-color: var(--medium);
+	border-radius: 5px;
+	margin: 0px;
+	padding: 5px;
+	width: fit-content;
+}
+
+c-message.own .messageContent > pre {
+	background-color: var(--accentDarker);
+}
+
+c-message .messageContent * {
+	user-select: text !important;
+}
+
+c-message > *:last-child {
+	margin-left: 10px;
+	background-color: var(--light);
+	padding: 20px;
+	padding-top: 10px;
+	padding-bottom: 10px;
+	border-radius: 10px;
+	color: var(--text);
+	border-bottom-left-radius: 0px;
+}
+
+c-message.own {
+	float: right;
+	flex-direction: row-reverse;
+}
+
+c-message.own > *:last-child {
+	margin-left: 0px;
+	margin-right: 10px;
+	background-color: var(--accent);
+	color: black;
+	border-bottom-left-radius: 10px;
+	border-bottom-right-radius: 0px;
+}
+
+c-message > span > *:not(img) {
+	user-select: text;
+}
+
+c-unread {
+	display: flex;
+	float: none;
+	clear: both;
+}
+
+c-unread > div {
+	background-color: var(--dnd);;
+	height: 1px;
+	display: inline-block;
+	width: -webkit-fill-available;
+	margin: auto;
+	margin-right: 20px;
+	margin-left: 20px;
+}
+
+c-unread > span {
+	white-space: nowrap;
+	color: var(--dnd);
+}
+
+textarea#messageInput {
+	background-color: var(--light);
+	border-radius: 5px;
+	border: none;
+	color: var(--text);
+	display: block;
+	font-size: 15px;
+	height: auto;
+	line-height: 20px;
+	margin: auto;
+	max-height: 144px;
+	min-height: 20px;
+	outline: none;
+	padding: 10px;
+	margin-bottom: 20px;
+	margin-top: 10px;
+	resize: none;
+	user-select: none;
+	white-space: pre-wrap;
+	width: calc(100% - 60px);
+}
