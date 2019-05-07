@@ -103,7 +103,7 @@ export class Client {
 	 * Returns the current channel
 	 */
 	public getCurrentChannel(): Channel | undefined {
-		if (this.currentChannelId) {
+		if (this.currentChannelId || this.currentChannelId === 0) {
 			return this.channels.find((channel) => channel.getChannelId === this.currentChannelId)!;
 		}
 		return undefined;
