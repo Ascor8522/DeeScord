@@ -1,29 +1,29 @@
 @font-face {
 	font-family: Whitney;
 	font-style: normal;
-	src: url("/resource/font/Whitney\ Bold\ Regular.ttf");
 	font-weight: 700;
+	src: url("/resource/font/Whitney\ Bold\ Regular.ttf");
 }
 
 @font-face {
 	font-family: Whitney;
 	font-style: normal;
-	src: url("/resource/font/Whitney\ Book\ Regular.ttf");
 	font-weight: 300;
+	src: url("/resource/font/Whitney\ Book\ Regular.ttf");
 }
 
 @font-face {
 	font-family: Whitney;
 	font-style: normal;
-	src: url("/resource/font/Whitney\ Medium\ Regular.ttf");
 	font-weight: 500;
+	src: url("/resource/font/Whitney\ Medium\ Regular.ttf");
 }
 
 @font-face {
 	font-family: Whitney;
 	font-style: normal;
-	src: url("/resource/font/Whitney\ Semibold\ Regular.ttf");
 	font-weight: 600;
+	src: url("/resource/font/Whitney\ Semibold\ Regular.ttf");
 }
 
 :root {
@@ -55,29 +55,30 @@
 }
 
 body, main {
+	align-items: stretch;
 	background-color: var(--main);
 	display: flex;
 	flex-direction: row;
 	flex: 1 1 auto;
 	height: -webkit-fill-available;
+	justify-content: space-around;
 	margin: 0px;
 	overflow: hidden;
 	padding: 0px;
 	width: 100%;
-	justify-content: space-around;
-	align-items: stretch;
 }
 
 .noscript {
-	margin: auto;
 	color: red;
 	font-size: xx-large;
 	font-weight: bolder;
+	margin: auto;
 }
 
 button, input[type=button], input[type=submit] {
-	border: none;
 	border-radius: 5px;
+	border: none;
+	box-shadow: 0px 0px 2px #00000080;
 	color: rgb(255, 255, 255);
 	cursor: pointer;
 	display: inline-block;
@@ -86,8 +87,8 @@ button, input[type=button], input[type=submit] {
 	justify-content: center;
 	line-height: 16px;
 	margin: auto;
-	margin-top: 10px;
 	margin-bottom: 10px;
+	margin-top: 10px;
 	min-height: 32px;
 	min-width: 60px;
 	outline: none;
@@ -98,7 +99,6 @@ button, input[type=button], input[type=submit] {
 	text-align: center;
 	transition: background-color .17s ease, color .17s ease;
 	user-select: none;
-	box-shadow: 0px 0px 2px #00000080;
 }
 
 button:not(:disabled):active, input[type=button]:not(:disabled):active, input[type=submit]:not(:disabled):active {
@@ -112,17 +112,17 @@ button:not(:disabled):active, input[type=button]:not(:disabled):active, input[ty
 
 input {
 	background-color: transparent;
+	border-radius: 5px;
 	border: none;
-	outline: none;
 	color: var(--text);
 	cursor: pointer;
-	text-overflow: ellipsis;
-	overflow: hidden;
-	font-weight: bold;
 	font-size: 16px;
+	font-weight: bold;
 	line-height: 16px;
-	border-radius: 5px;
+	outline: none;
+	overflow: hidden;
 	padding: 5px;
+	text-overflow: ellipsis;
 }
 
 input:focus {

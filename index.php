@@ -30,6 +30,7 @@ if (!isset($_COOKIE["token"]) || !isValidToken($_COOKIE["token"])) {
 	<link rel="stylesheet" type="text/css" href="/resource/css/scroll.css" />
 	<link rel="stylesheet" type="text/css" href="/resource/css/popup.css" />
 	<title>Chat</title>
+	<link rel="icon" type="image/ico" href="/favicon.ico">
 
 	<link rel="apple-touch-startup-image" href="/resource/icon/favicon-256.png" media="(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2)" />
 	<link rel="apple-touch-startup-image" href="/resource/icon/favicon-256.png" media="(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2)" />

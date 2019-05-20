@@ -220,7 +220,7 @@ export async function getNewUserId(database: sqlite3.Database): Promise<number> 
 				reject(err);
 			}
 
-			resolve(Number.parseInt(row["m"], 10) + 1);
+			resolve((Number.parseInt(row["m"], 10) || 0) + 1);
 		});
 	});
 }
@@ -386,7 +386,7 @@ export async function getNewChannelId(database: sqlite3.Database): Promise<numbe
 				reject(err);
 			}
 
-			resolve(Number.parseInt(row["m"], 10) + 1);
+			resolve((Number.parseInt(row["m"], 10) || 0) + 1);
 		});
 	});
 }
@@ -506,7 +506,7 @@ export async function getNewMessageId(database: sqlite3.Database): Promise<numbe
 				reject(err);
 			}
 
-			resolve(Number.parseInt(row["m"], 10) + 1);
+			resolve((Number.parseInt(row["m"], 10) || 0) + 1);
 		});
 	});
 }

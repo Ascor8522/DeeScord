@@ -1,8 +1,8 @@
 form {
-	height: min-content;
-	max-width: 100vw;
-	margin: auto;
 	background-color: var(--dark);
+	height: min-content;
+	margin: auto;
+	max-width: 100vw;
 	padding: 20px;
 	zoom: 1.5;
 }

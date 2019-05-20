@@ -7,28 +7,29 @@
 
 .side {
 	background-color: var(--medium);
-	width: 15vw;
-	min-width: 250px;
 	max-width: 15vw;
+	min-width: 250px;
+	width: 15vw;
 }
 
 .center.column {
+	background-color: var(--main);
 	display: flex;
 	flex: 1 1 auto;
-	background-color: var(--main);
 	min-width: 0px;
 }
 
 .column>.columnInfo {
 	color: var(--text);
 	cursor: pointer;
-	text-overflow: ellipsis;
 	flex: 0 0 auto;
-	overflow: hidden;
-	min-height: 64px;
 	line-height: 64px;
-	width: 100%;
+	max-height: 64px;
+	min-height: 64px;
+	overflow: hidden;
 	text-align: center;
+	text-overflow: ellipsis;
+	width: 100%;
 }
 
 .center.column .columnInfo {
@@ -61,20 +62,22 @@
 }
 
 .center .channelIcon {
-	margin-right: 5px;
-	vertical-align: middle;
-	position: relative;
 	bottom: 4px;
 	margin-left: 20px;
+	margin-right: 5px;
+	position: relative;
+	vertical-align: middle;
 }
 
 c-channel, c-user {
+	border-radius: 5px;
 	color: var(--text);
 	cursor: pointer;
-	border-radius: 5px;
 	display: block;
 	line-height: 20px;
 	margin: auto;
+	margin-top: 5px;
+	margin-bottom: 5px;
 	padding: 7px;
 	width: 80%;
 }

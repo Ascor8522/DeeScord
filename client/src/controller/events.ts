@@ -119,7 +119,7 @@ export class EventHandler {
 					this.client.getChannels.push(channel);
 					this.client.display.addChannel(channel);
 					if (this.client.getChannels.length === 1) {
-						this.client.joinChannel(this.client.getChannels[0].getChannelId);
+						this.client.joinChannel(response.data.channelId);
 					}
 					break;
 

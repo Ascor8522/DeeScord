@@ -10,7 +10,7 @@ import { EventHandler } from "./events";
  * Represents a client
  */
 export class Client {
-	public readonly host: string = "localhost";
+	public readonly host: string = window.document.location.host;
 	public readonly url = {
 		channelsList: "/api/channelsList.php",
 		messagesList: "/api/messages.php",
@@ -19,7 +19,7 @@ export class Client {
 		socket: {
 			port: 8080,
 			protocol: `ws${window.location.protocol === "https:" ? "s" : ""}`,
-			url: "localhost",
+			url: window.document.location.host + `${window.document.location.host === "localhost" ? "" : "/ws"}`,
 		},
 	};
 
@@ -42,7 +42,7 @@ export class Client {
 		this.display.offline();
 
 		try {
-			this.socket = new WebSocket(`${this.url.socket.protocol}://${this.url.socket.url}:${this.url.socket.port}`);
+			this.socket = new WebSocket(`${this.url.socket.protocol}://${this.url.socket.url}${window.document.location.host === "localhost" ? ":" + this.url.socket.port : ""}`);
 		} catch (error) {
 			console.error("Could not create socket");
 		}

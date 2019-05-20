@@ -24,6 +24,15 @@ if (isset($_COOKIE["token"]) && isValidToken($_COOKIE["token"])) {
 	<link rel="stylesheet" type="text/css" href="/resource/css/scroll.css" />
 	<link rel="stylesheet" type="text/css" href="/resource/css/login/login.css" />
 	<title>Login</title>
+	<link rel="icon" type="image/ico" href="/favicon.ico">
+
+	<link rel="apple-touch-startup-image" href="/resource/icon/favicon-256.png" media="(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2)" />
+	<link rel="apple-touch-startup-image" href="/resource/icon/favicon-256.png" media="(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2)" />
+	<link rel="apple-touch-startup-image" href="/resource/icon/favicon-512.png" media="(device-width: 621px) and (device-height: 1104px) and (-webkit-device-pixel-ratio: 3)" />
+	<link rel="apple-touch-startup-image" href="/resource/icon/favicon-512.png" media="(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3)" />
+	<link rel="apple-touch-startup-image" href="/resource/icon/favicon-512.png" media="(device-width: 768px) and (device-height: 1024px) and (-webkit-device-pixel-ratio: 2)" />
+	<link rel="apple-touch-startup-image" href="/resource/icon/favicon-512.png" media="(device-width: 834px) and (device-height: 1112px) and (-webkit-device-pixel-ratio: 2)" />
+	<link rel="apple-touch-startup-image" href="/resource/icon/favicon-512.png" media="(device-width: 1024px) and (device-height: 1366px) and (-webkit-device-pixel-ratio: 2)" />
 </head>
 
 <body>
