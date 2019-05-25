@@ -84,18 +84,27 @@ export class C_Message extends HTMLElement {
 	private displayDate(timestamp: number): string {
 		let str: string = "";
 		const date: Date = new Date(timestamp);
-		const diff: number = Date.now() - date.getTime();
+		const today: Date = new Date();
+		today.setHours(0, 0, 0, 0);
+		const yesterday: Date = new Date();
+		yesterday.setDate(yesterday.getDate() - 1);
+		yesterday.setHours(0, 0, 0, 0);
+		const week: Date = new Date();
+		week.setDate(yesterday.getDate() - 7);
+		week.setHours(0, 0, 0, 0);
 
 		switch (true) {
-			case diff <= 1000 * 60 * 60 * 24 * 7:
-				str = `Last ${["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Daturday"][date.getDay()]} at ${date.toLocaleTimeString()}`;
-			case diff <= 1000 * 60 * 60 * 24 * 2:
-				str = `Yesterday at ${date.toLocaleTimeString()}`;
-			case diff <= 1000 * 60 * 60 * 24:
-				str = `Today at ${date.toLocaleTimeString()}`;
+			case timestamp >= today.getTime():
+				str = `Today at ${date.toLocaleTimeString().slice(0, -3)}`;
+				break;
+			case timestamp >= yesterday.getTime():
+				str = `Yesterday at ${date.toLocaleTimeString().slice(0, -3)}`;
+				break;
+			case timestamp >= week.getTime():
+				str = `Last ${["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Daturday"][date.getDay()]} at ${date.toLocaleTimeString().slice(0, -3)}`;
 				break;
 			default:
-				return `${date.toLocaleDateString()} at ${date.toLocaleTimeString()}`;
+				return `${date.toLocaleDateString()} at ${date.toLocaleTimeString().slice(0, -3)}`;
 		}
 		return str;
 	}

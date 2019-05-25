@@ -21,7 +21,6 @@
 
 .column>.columnInfo {
 	color: var(--text);
-	cursor: pointer;
 	flex: 0 0 auto;
 	line-height: 64px;
 	max-height: 64px;
@@ -34,6 +33,10 @@
 
 .center.column .columnInfo {
 	text-align: left;
+}
+
+.column>.columnInfo input:hover {
+	background-color: #00000030;
 }
 
 .column>*{
@@ -91,6 +94,8 @@ c-channel, c-user {
 	max-width: 15px;
 	transition: 0.2s background-color ease-in-out;
 	vertical-align: middle;
+	position: relative;
+	bottom: 3px;
 }
 
 #channelDelete:not(:disabled):hover {
