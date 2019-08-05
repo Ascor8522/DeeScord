@@ -281,7 +281,7 @@ export async function changeUserIcon(database: sqlite3.Database, userId: number,
 		database.run(
 			`UPDATE users
 			SET userIcon = $userIcon
-			WHERE userId = $userid`,
+			WHERE userId = $userId`,
 			{
 				$userIcon: userIcon,
 				$userId: userId,

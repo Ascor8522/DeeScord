@@ -3,6 +3,7 @@ import { C_Message } from "./components/c_message";
 import { C_Unread } from "./components/c_unread";
 import { C_User } from "./components/c_user";
 import { Client } from "./controller/client";
+import { xhr } from "./xhr";
 
 (() => {
 	try {
@@ -14,11 +15,15 @@ import { Client } from "./controller/client";
 		console.error("Could not define custom elements");
 	}
 
-	const client = new Client();
+	try {
+		const client = new Client();
+	} catch (e) {
+		xhr("POST", window.location.host, "/error.php", {error: e});
+	}
+
 })();
 
 /*
-localstorage current channel
 localstorage last read message each channel
 tick in channel for unread messages
 */

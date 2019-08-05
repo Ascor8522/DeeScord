@@ -21,11 +21,10 @@ export class Display {
 	private readonly disconnect: HTMLButtonElement = document.getElementById("disconnect")! as HTMLButtonElement;
 	private readonly messageInput: HTMLTextAreaElement = document.getElementById("messageInput")! as HTMLTextAreaElement;
 	private readonly messagesList: HTMLDivElement = document.getElementById("messagesList")! as HTMLDivElement;
-	private readonly userIcon: HTMLElement = document.getElementById("")!;
-	private readonly userName: HTMLElement = document.getElementById("")!;
-	private readonly userNameChange: HTMLButtonElement = document.getElementById("userNameChange")! as HTMLButtonElement;
+	private readonly userIconChange: HTMLImageElement = document.getElementById("userIconChange")! as HTMLImageElement;
+	private readonly userNameChange: HTMLInputElement = document.getElementById("userNameChange")! as HTMLInputElement;
 	private readonly usersList: HTMLDivElement = document.getElementById("usersList")! as HTMLDivElement;
-	private readonly userStatus: HTMLElement = document.getElementById("")!;
+	private readonly userStatusChange: HTMLButtonElement = document.getElementById("userStatusChange")! as HTMLButtonElement;
 
 	/**
 	 * Creates a new display object
@@ -44,19 +43,23 @@ export class Display {
 		this.channelName.removeAttribute("disabled");
 		this.channelTopic.removeAttribute("disabled");
 		this.messageInput.removeAttribute("disabled");
+		this.userIconChange.removeAttribute("disabled");
 		this.userNameChange.removeAttribute("disabled");
+		this.userStatusChange.removeAttribute("disabled");
 	}
 
 	/**
 	 * Sets the client in online mode
 	 */
 	public offline(): void {
-		this.channelCreate.setAttribute("diabled", "");
-		this.channelDelete.setAttribute("diabled", "");
-		this.channelName.setAttribute("diabled", "");
-		this.channelTopic.setAttribute("diabled", "");
-		this.messageInput.setAttribute("diabled", "");
-		this.userNameChange.setAttribute("diabled", "");
+		this.channelCreate.setAttribute("disabled", "");
+		this.channelDelete.setAttribute("disabled", "");
+		this.channelName.setAttribute("disabled", "");
+		this.channelTopic.setAttribute("disabled", "");
+		this.messageInput.setAttribute("disabled", "");
+		this.userIconChange.setAttribute("disabled", "");
+		this.userNameChange.setAttribute("disabled", "");
+		this.userStatusChange.setAttribute("disabled", "");
 	}
 
 	/**
@@ -85,9 +88,9 @@ export class Display {
 		});
 
 		if (this.client.getChannels.length === 0) {
-			this.channelDelete.setAttribute("diabled", "");
-			this.channelName.setAttribute("diabled", "");
-			this.channelTopic.setAttribute("diabled", "");
+			this.channelDelete.setAttribute("disabled", "");
+			this.channelName.setAttribute("disabled", "");
+			this.channelTopic.setAttribute("disabled", "");
 		}
 	}
 
@@ -222,6 +225,18 @@ export class Display {
 		.forEach((cMessage: C_Message) => {
 			cMessage.update();
 		});
+
+		if (user === this.client.getCurrentUser()) {
+			if (this.client.getCurrentUser().getUserIcon && this.userIconChange.src !== this.client.getCurrentUser().getUserIcon) {
+				this.userIconChange.src = this.client.getCurrentUser().getUserIcon;
+			}
+			if (this.userNameChange.value !== this.client.getCurrentUser().getUserName) {
+				this.userNameChange.value = this.client.getCurrentUser().getUserName;
+			}
+			if (this.userStatusChange.style.backgroundColor !== `var(--${this.client.getCurrentUser().getUserStatus})`) {
+				this.userStatusChange.style.backgroundColor = `var(--${this.client.getCurrentUser().getUserStatus})`;
+			}
+		}
 	}
 
 	/**

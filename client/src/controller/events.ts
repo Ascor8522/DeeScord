@@ -8,6 +8,7 @@ import { ChannelDeleted } from "../messages/channel/channelDeleted";
 import { ChannelRenamed } from "../messages/channel/channelRenamed";
 import { ChannelTopic } from "../messages/channel/channelTopic";
 import { MessageSent } from "../messages/message/messageSent";
+import { UserIconChanged } from "../messages/user/userIconChanged";
 import { UserNameChanged } from "../messages/user/userNameChanged";
 import { UserStatusChanged } from "../messages/user/userStatusChanged";
 import { WhoAmI } from "../messages/whoAmI";
@@ -26,7 +27,9 @@ export class EventHandler {
 	private readonly channelTopic: HTMLInputElement = document.getElementById("channelTopic")! as HTMLInputElement;
 	private readonly disconnect: HTMLButtonElement = document.getElementById("disconnect")! as HTMLButtonElement;
 	private readonly messageInput: HTMLTextAreaElement = document.getElementById("messageInput")! as HTMLTextAreaElement;
-	private readonly userNameChange: HTMLButtonElement = document.getElementById("userNameChange")! as HTMLButtonElement;
+	private readonly userIconChange: HTMLImageElement = document.getElementById("userIconChange")! as HTMLImageElement;
+	private readonly userNameChange: HTMLInputElement = document.getElementById("userNameChange")! as HTMLInputElement;
+	private readonly userStatusChange: HTMLButtonElement = document.getElementById("userStatusChange")! as HTMLButtonElement;
 
 	/**
 	 * Creates a new even handler
@@ -44,16 +47,16 @@ export class EventHandler {
 	private socketEvent(): void {
 		if (!this.client.socket.OPEN) {
 			console.warn(`WebSocket not ready. Aborting.`);
-			return;
 		}
 
 		this.client.socket.onopen = () => {
 			console.log(`Connected to server`);
 			this.client.display.online();
-			this.client.socket.send(JSON.stringify(new WhoAmI()));
+			this.socketSend(JSON.stringify(new WhoAmI()));
 		};
 
 		this.client.socket.onerror = (e: Event) => {
+			this.client.display.offline();
 			console.error(`Error with connexion`);
 		};
 
@@ -68,7 +71,8 @@ export class EventHandler {
 			switch (response.type) {
 				case "WhoAmI":
 					this.client.currentUserId = response.data.userId;
-					this.client.socket.send(JSON.stringify(new UserStatusChanged(UserStatus.ONLINE)));
+					this.socketSend(JSON.stringify(new UserStatusChanged(UserStatus.ONLINE)));
+					this.client.display.updateUser(this.client.getCurrentUser());
 					break;
 
 				case "ChannelTopic":
@@ -134,7 +138,7 @@ export class EventHandler {
 					}
 					if (response.data.messageChannelId === this.client.currentChannelId) {
 						this.client.display.addMessage(message);
-					} else {
+					} else if (this.client.getCurrentUser().getUserStatus !== UserStatus.DND) {
 						new Audio("/resource/mp3/notification.mp3").play();
 					}
 					break;
@@ -167,12 +171,17 @@ export class EventHandler {
 							user.setUserName = response.data.userName;
 							this.client.display.updateUser(user);
 						});
-					this.client
-						.getCurrentChannel()!
-						.getChannelMessages.filter((message) => message.getMessageAuthorId === user.getUserId)
-						.forEach((message) => {
-							this.client.display.updateMessage(message);
-						});
+					if (this.client.getCurrentChannel()) {
+						this.client
+							.getCurrentChannel()!
+							.getChannelMessages.filter((message) => message.getMessageAuthorId === response.data.getUserId)
+							.forEach((message) => {
+								this.client.display.updateMessage(message);
+							});
+					}
+					if (this.client.getCurrentUser().getUserId === response.data.userId) {
+						this.userNameChange.value = response.data.userName;
+					}
 					break;
 
 				case "UserIconChanged":
@@ -182,12 +191,14 @@ export class EventHandler {
 							user.setUserIcon = response.data.userIcon;
 							this.client.display.updateUser(user);
 						});
-					this.client
-						.getCurrentChannel()!
-						.getChannelMessages.filter((message: Message) => message.getMessageAuthorId === user.getUserId)
-						.forEach((message: Message) => {
-							this.client.display.updateMessage(message);
-						});
+					if (this.client.getCurrentChannel()) {
+						this.client
+							.getCurrentChannel()!
+							.getChannelMessages.filter((message: Message) => message.getMessageAuthorId === response.data.userId)
+							.forEach((message: Message) => {
+								this.client.display.updateMessage(message);
+							});
+					}
 					break;
 
 				case "Error":
@@ -204,68 +215,106 @@ export class EventHandler {
 		let idleTimeout: number;
 		let previousStatus: UserStatus = UserStatus.ONLINE;
 
+		/* User goes offline when leaves */
+		window.addEventListener("beforeunload", (): void => {
+			this.socketSend(JSON.stringify(new UserStatusChanged(UserStatus.OFFLINE)));
+		});
+
+		/* User goes idle automatically */
 		window.addEventListener("blur", (): void => {
 			idleTimeout = window.setTimeout(() => {
-				if (this.client.getCurrentUser().getUserStatus !== UserStatus.IDLE) {
+				if (this.client.getCurrentUser().getUserStatus === UserStatus.ONLINE) {
 					previousStatus = this.client.getCurrentUser().getUserStatus;
-					this.client.socket.send(JSON.stringify(new UserStatusChanged(UserStatus.IDLE)));
+					this.socketSend(JSON.stringify(new UserStatusChanged(UserStatus.IDLE)));
 				}
 			}, 10 * 1000);
 		});
 
+		/* User goes back online */
 		window.addEventListener("focus", (): void => {
 			window.clearTimeout(idleTimeout);
 			if (this.client.getCurrentUser().getUserStatus === UserStatus.IDLE) {
-				this.client.socket.send(JSON.stringify(new UserStatusChanged(previousStatus)));
+				this.socketSend(JSON.stringify(new UserStatusChanged(previousStatus)));
 			}
 		});
 
 		/* Create channel */
 		this.channelCreate.addEventListener("click", () => {
-			this.client.socket.send(JSON.stringify(new ChannelCreated(prompt("Nom du nouveau channel") || "", prompt("Topic du nouveau channel") || "")));
+			const newChannelName: string | null = prompt("Nom du nouveau channel");
+			if (newChannelName || newChannelName ===  "") {
+				const newChannelDescription: string = prompt("Topic du nouveau channel") || "";
+				this.socketSend(JSON.stringify(new ChannelCreated(newChannelName, newChannelDescription)));
+			}
+		});
+
+		/* Changer icon */
+		this.userIconChange.addEventListener("click", (): void => {
+			const userIconURL: string = prompt("URL de l'icone de profil") || "";
+			if (userIconURL && userIconURL !== this.client.getCurrentUser().getUserIcon) {
+				this.socketSend(JSON.stringify(new UserIconChanged(userIconURL)));
+			}
+		});
+
+		/* Change Username */
+		this.userNameChange.addEventListener("blur", (): void => {
+			const userName: string = this.userNameChange.value || this.client.getCurrentUser().getUserName;
+			if (this.client.getCurrentUser().getUserName !== userName) {
+				this.socketSend(JSON.stringify(new UserNameChanged(userName)));
+			} else if (this.userNameChange.value === "") {
+				this.userNameChange.value = userName;
+			}
+		});
+
+		/* Change user status */
+		this.userStatusChange.addEventListener("click", (): void => {
+			// @ts-ignore
+			this.socketSend(JSON.stringify(new UserStatusChanged(UserStatus[Object.keys(UserStatus)[(Object.keys(UserStatus).map((s) => UserStatus[s]).indexOf(this.client.getCurrentUser().getUserStatus.toString()) + 1) % (Object.keys(UserStatus).length)]])));
 		});
 
 		/* Disconnect */
 		this.disconnect.addEventListener("click", () => {
+			this.socketSend(JSON.stringify(new UserStatusChanged(UserStatus.OFFLINE)));
 			window.location.href = "/logout.php";
-		});
-
-		/* Change Username */
-		this.userNameChange.addEventListener("click", (): void => {
-			// TODO
-			const userName: string = prompt("Enter new username") || this.client.getCurrentUser().getUserName;
-			if (this.client.getCurrentUser().getUserName !== userName) {
-				this.client.getCurrentUser().setUserName = userName;
-				this.client.socket.send(JSON.stringify(new UserNameChanged(userName)));
-			}
 		});
 
 		this.channelName.addEventListener("blur", () => {
 			if (this.client.currentChannelId && this.client.getCurrentChannel()!.getChannelName !== this.channelName.value) {
 				// client.getCurrentChannel()!.setChannelName = channelNameBox.value;
-				this.client.socket.send(JSON.stringify(new ChannelRenamed(this.client.currentChannelId, this.channelName.value)));
+				this.socketSend(JSON.stringify(new ChannelRenamed(this.client.currentChannelId, this.channelName.value)));
 			}
 		});
 
 		this.channelTopic.addEventListener("blur", () => {
 			if (this.client.currentChannelId && this.client.getCurrentChannel()!.getChannelTopic !== this.channelTopic.value) {
-				this.client.socket.send(JSON.stringify(new ChannelTopic(this.client.currentChannelId, this.channelTopic.value)));
+				this.socketSend(JSON.stringify(new ChannelTopic(this.client.currentChannelId, this.channelTopic.value)));
 			}
 		});
 
 		this.channelDelete.addEventListener("click", () => {
 			if (this.client.currentChannelId) {
-				this.client.socket.send(JSON.stringify(new ChannelDeleted(this.client.currentChannelId!)));
+				this.socketSend(JSON.stringify(new ChannelDeleted(this.client.currentChannelId!)));
 			}
 		});
 
 		this.messageInput.addEventListener("keypress", (ev: KeyboardEvent): void => {
 			if (ev.key === "Enter" && !ev.shiftKey && this.client.currentChannelId && this.messageInput.value.trim() !== "") {
-				this.client.socket.send(JSON.stringify(new MessageSent(this.client.currentUserId, this.client.currentChannelId, this.messageInput.value.trim())));
+				this.socketSend(JSON.stringify(new MessageSent(this.client.currentUserId, this.client.currentChannelId, this.messageInput.value.trim())));
 				setTimeout(() => {
 					this.messageInput.value = "";
 				}, 20);
 			}
 		});
+	}
+
+	private socketSend(message: string): void {
+		try {
+			if (this.client.socket.OPEN) {
+				this.client.socket.send(message);
+			} else {
+				this.client.display.offline();
+			}
+		} catch (e) {
+			this.client.display.offline();
+		}
 	}
 }

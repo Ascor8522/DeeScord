@@ -37,7 +37,6 @@ export class C_Message extends HTMLElement {
 		}
 
 		this.domMessageAuthorIcon.className = "userIcon";
-		this.domMessageAuthorIcon.src = client.getUserIconById(this.message.getMessageAuthorId);
 
 		this.domMessageAuthor.className = "messageAuthor";
 
@@ -70,11 +69,21 @@ export class C_Message extends HTMLElement {
 	 * Updates the message
 	 */
 	public update(): void {
-		this.domMessageAuthor.innerHTML = clean(this.client.getUserNameById(this.message.getMessageAuthorId));
+		if (this.domMessageAuthor.innerHTML !== clean(this.client.getUserNameById(this.message.getMessageAuthorId))) {
+			this.domMessageAuthor.innerHTML = clean(this.client.getUserNameById(this.message.getMessageAuthorId));
+		}
 
-		this.domMessageTimestamp.innerText = this.displayDate(this.message.getMessageTimestamp);
+		if (this.domMessageTimestamp.innerText !== this.displayDate(this.message.getMessageTimestamp)) {
+			this.domMessageTimestamp.innerText = this.displayDate(this.message.getMessageTimestamp);
+		}
 
-		this.domMessageContent.innerHTML = format(clean(this.message.getMessageContent));
+		if (this.domMessageAuthorIcon.src !== this.client.getUserIconById(this.message.getMessageAuthorId)) {
+			this.domMessageAuthorIcon.src = this.client.getUserIconById(this.message.getMessageAuthorId);
+		}
+
+		if (this.domMessageContent.innerHTML !== format(clean(this.message.getMessageContent))) {
+			this.domMessageContent.innerHTML = format(clean(this.message.getMessageContent));
+		}
 	}
 
 	/**

@@ -47,7 +47,9 @@ export class C_Channel extends HTMLElement {
 	 * Updates the element
 	 */
 	public update(): void {
-		this.domChannelName.innerText = clean(this.channel.getChannelName);
+		if (this.domChannelName.innerHTML !== clean(this.channel.getChannelName)) {
+			this.domChannelName.innerHTML = clean(this.channel.getChannelName);
+		}
 	}
 
 	/**

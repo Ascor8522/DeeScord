@@ -1,4 +1,5 @@
 import { User } from "../interfaces/user";
+import { UserStatus } from "../interfaces/userStatus";
 import { clean } from "../utils/cleaner";
 
 /**
@@ -25,7 +26,6 @@ export class C_User extends HTMLElement {
 		this.domUserName = document.createElement("div");
 
 		this.domUserIcon.className = "userIcon";
-		this.domUserIcon.src = this.user.getUserIcon ? this.user.getUserIcon : "/resource/icon/user.svg";
 		this.domUserIcon.alt = "User icon";
 
 		this.update();
@@ -49,9 +49,16 @@ export class C_User extends HTMLElement {
 	 * Updates the user
 	 */
 	public update(): void {
-		this.className = "";
-		this.classList.add(this.user.getUserStatus.toString());
+		if (this.className !== this.user.getUserStatus.toString() || UserStatus.OFFLINE.toString()) {
+			this.className = this.user.getUserStatus.toString() || UserStatus.OFFLINE.toString();
+		}
 
-		this.domUserName.innerHTML = clean(this.user.getUserName);
+		if (this.domUserName.innerHTML !== clean(this.user.getUserName)) {
+			this.domUserName.innerHTML = clean(this.user.getUserName);
+		}
+
+		if (this.domUserIcon.src !== this.user.getUserIcon ? this.user.getUserIcon : "/resource/icon/user.svg") {
+			this.domUserIcon.src = this.user.getUserIcon ? this.user.getUserIcon : "/resource/icon/user.svg";
+		}
 	}
 }
