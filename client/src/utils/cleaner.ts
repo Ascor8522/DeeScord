@@ -37,10 +37,7 @@ export function format(input: string): string {
  * @param {string} after the string as replacement
  */
 function replaceAll(input: string, before: RegExp, after: string): string {
-	while (before.test(input)) {
-		input = input.replace(before, after);
-	}
-	return input;
+	return input.split(before).join(after);
 }
 
 /**
