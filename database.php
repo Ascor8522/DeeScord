@@ -5,9 +5,19 @@
  * @return the open database
  */
 function connectDB() {
-	return new PDO('sqlite:'.dirname(__FILE__).'/database.sqlite3', null, null, array(
+	if (!file_exists(dirname(__FILE__)."/database.sqlite3")) {
+		$pdo =  new PDO('sqlite:'.dirname(__FILE__).'/database.sqlite3', null, null, array(
+			PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
+		));
+        $stmt = $pdo->prepare(file_get_contents(dirname(__FILE__)."/create.sql"));
+        $stmt->execute();
+    } else {
+		$pdo =  new PDO('sqlite:'.dirname(__FILE__).'/database.sqlite3', null, null, array(
 		PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
 	));
+	}
+
+	return $pdo;
 }
 
 /**
@@ -33,7 +43,7 @@ function getChannels() {
 		"SELECT channelId, channelName, channelTopic
 		FROM channels
 		WHERE channelDeleted != 'true'
-		ORDER BY channelName")->fetchAll(PDO::FETCH_ASSOC));
+		ORDER BY channelId")->fetchAll(PDO::FETCH_ASSOC));
 }
 
 /**
