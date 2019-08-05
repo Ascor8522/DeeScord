@@ -12,10 +12,10 @@ c-user>div:first-child {
 }
 
 c-user>div:last-child {
-	bottom: 8px;
-	display: inline;
-	line-height: 15px;
+	display: inline-block;
 	margin-left: 10px;
+	max-width: 80%;
+	overflow: hidden;
 	position: relative;
 	text-overflow: ellipsis;
 }

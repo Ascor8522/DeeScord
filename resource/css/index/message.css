@@ -1,3 +1,7 @@
+#messagesList {
+	min-width: 0px;
+}
+
 c-message {
 	clear: both;
 	display: flex;
@@ -6,7 +10,7 @@ c-message {
 	margin-top: 10px;
 }
 
-c-message > * {
+c-message>* {
 	display: inline-block;
 }
 
@@ -40,12 +44,18 @@ c-message .messageTimestamp {
 	font-weight: 400;
 	white-space: nowrap;
 }
+
 c-message .messageContent {
 	font-size: 15px;
 	font-weight: 300;
+	word-break: break-word;
 }
 
-c-message .messageContent > pre {
+c-message .messageContent code {
+	font-family: monospace;
+}
+
+c-message .messageContent pre, c-message .messageContent code {
 	background-color: var(--medium);
 	border-radius: 5px;
 	margin: 0px;
@@ -53,15 +63,16 @@ c-message .messageContent > pre {
 	width: fit-content;
 }
 
-c-message.own .messageContent > pre {
+c-message.own .messageContent pre, c-message.own .messageContent code {
 	background-color: var(--accentDarker);
 }
 
 c-message .messageContent * {
 	user-select: text !important;
+	-moz-user-select: none !important;
 }
 
-c-message > *:last-child {
+c-message>*:last-child {
 	background-color: var(--light);
 	border-bottom-left-radius: 0px;
 	border-radius: 10px;
@@ -78,17 +89,33 @@ c-message.own {
 	float: right;
 }
 
-c-message.own > *:last-child {
+c-message.own>*:last-child {
 	background-color: var(--accent);
 	border-bottom-left-radius: 10px;
 	border-bottom-right-radius: 0px;
 	color: black;
-	margin-left: 50px;
 	margin-right: 10px;
 }
 
-c-message > span > *:not(img) {
+c-message.own+c-message.own {
+	margin-top: -20px;
+}
+
+c-message.own+c-message.own>span:first-child {
+	display: none;
+}
+
+c-message.own+c-message.own>span:last-child {
+	margin-right: 50px;
+}
+
+c-message.own+c-message.own>span:last-child>span {
+	display: none;
+}
+
+c-message>span>*:not(img) {
 	user-select: text;
+	-moz-user-select: none;
 }
 
 c-unread {
@@ -97,17 +124,19 @@ c-unread {
 	float: none;
 }
 
-c-unread > div {
-	background-color: var(--dnd);;
+c-unread>div {
+	background-color: var(--dnd);
+	;
 	display: inline-block;
 	height: 1px;
 	margin-left: 20px;
 	margin-right: 20px;
 	margin: auto;
 	width: -webkit-fill-available;
+	width: -moz-available;
 }
 
-c-unread > span {
+c-unread>span {
 	color: var(--dnd);
 	white-space: nowrap;
 }
@@ -130,6 +159,7 @@ textarea#messageInput {
 	padding: 10px;
 	resize: none;
 	user-select: none;
+	-moz-user-select: none;
 	white-space: pre-wrap;
 	width: calc(100% - 60px);
 }

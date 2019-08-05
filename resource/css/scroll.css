@@ -35,7 +35,8 @@
 	border-color: var(--medium);
 }
 
-.column ::-webkit-scrollbar-track, .column ::-webkit-scrollbar-track-piece {
+.column ::-webkit-scrollbar-track,
+.column ::-webkit-scrollbar-track-piece {
 	background-color: transparent;
 	border-color: var(--medium);
 }
@@ -50,7 +51,8 @@
 	border-color: var(--main);
 }
 
-.center.column ::-webkit-scrollbar-track, .center.column ::-webkit-scrollbar-track-piece {
+.center.column ::-webkit-scrollbar-track,
+.center.column ::-webkit-scrollbar-track-piece {
 	background-color: var(--medium);
 	border: 3px solid var(--main);
 }

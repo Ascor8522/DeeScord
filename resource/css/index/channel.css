@@ -5,16 +5,20 @@ div.channelIcon {
 	vertical-align: bottom;
 	width: 24px;
 }
+
 c-channel>div:last-child {
-	bottom: 2px;
 	display: inline-block;
+	height: 15px;
+	line-height: 15px;
 	margin-left: 5px;
 	max-width: 80%;
+	overflow: hidden;
 	position: relative;
 	text-overflow: ellipsis;
 }
 
-c-channel.current, c-user:hover {
+c-channel.current,
+c-user:hover {
 	background-color: var(--light);
 }
 
@@ -32,16 +36,40 @@ c-channel.unread:before {
 	width: 10px;
 }
 
-#channelsList > button {
+#channelsList>button {
 	display: block;
 }
 
-#disconnect {
-	float: left;
-	margin-left: 15px;
+#options {
+	min-width: 0px;
+}
+
+#options>div:first-child {
+	display: flex;
+	margin: auto;
+	min-width: 0px;
+	width: 80%;
+}
+
+#options>div:first-child>* {
+	flex: 1 1 auto;
+	margin: 0px;
+}
+
+#userIconChange {
+	border-radius: 100%;
+	cursor: pointer;
+	flex: 0 0 auto !important;
+	height: 30px;
+	width: 30px;
 }
 
 #userNameChange {
-	float: right;
-	margin-right: 15px;
+	margin-left: 15px !important;
+	margin-right: 15px !important;
+}
+
+#disconnect {
+	display: block;
+	width: 80%;
 }
