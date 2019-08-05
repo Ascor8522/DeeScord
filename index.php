@@ -29,7 +29,7 @@ if (!isset($_COOKIE["token"]) || !isValidToken($_COOKIE["token"])) {
 	<link rel="stylesheet" type="text/css" href="/resource/css/index/user.css" />
 	<link rel="stylesheet" type="text/css" href="/resource/css/scroll.css" />
 	<link rel="stylesheet" type="text/css" href="/resource/css/popup.css" />
-	<title>Chat</title>
+	<title>Deescord - Chat</title>
 	<link rel="icon" type="image/ico" href="/favicon.ico">
 
 	<link rel="apple-touch-startup-image" href="/resource/icon/favicon-256.png" media="(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2)" />
@@ -45,22 +45,30 @@ if (!isset($_COOKIE["token"]) || !isValidToken($_COOKIE["token"])) {
 	<main>
 		<!-- <div id="popup"></div> -->
 		<div class="side column">
-			<div class="columnInfo">Available channels</div>
+			<div class="columnInfo"><div>Available channels</div></div>
 			<div id="channelsList">
 				<button id="channelCreate" class="blue" title="Create new channel" disabled>Create new channel</button>
 			</div>
 			<div id="options">
-				<button id="disconnect" class="green" title="Disconnect">Disconnect</button>
-				<button id="userNameChange" class="blue" title="Chnage username" disabled>Change username</button>
+				<div>
+					<img id="userIconChange" title="Change your user icon" src="/resource/icon/user.svg" alt="" disabled>
+					<input id="userNameChange" type="text" maxlength="100" title="Change your username" disabled>
+					<button id="userStatusChange" title="Change your user status" disabled>👁️</button>
+				</div>
+				<div>
+					<button id="disconnect" class="blue" title="Disconnect">Disconnect</button>
+				</div>
 			</div>
 		</div>
 		<div class="center column">
 			<div class="columnInfo">
 				<span class="channelIcon"></span>
-				<input id="channelName" type="text" value="" placeholder="Unnamed channel" title="Channel Name" disabled>
+				<input id="channelName" type="text" value="" placeholder="Unnamed channel" maxlength="100" title="Channel Name" disabled>
 				<span class="nameTopicDivider">-</span>
-				<input id="channelTopic" type="text" value="" placeholder="No topic for his channel" title="Channel Topic" disabled>
-				<button id="channelDelete" title="Delete channel" disabled><img src="/resource/icon/delete.svg" alt="delete channel"></button>
+				<input id="channelTopic" type="text" value="" placeholder="No topic for this channel" maxlength="1000" title="Channel Topic" disabled>
+				<button id="channelDelete" title="Delete channel" disabled>
+					<img src="/resource/icon/delete.svg" alt="delete channel">
+				</button>
 			</div>
 			<div id="messagesList">
 				<noscript><span class="noscript">Your browser does not support JavaScript!<br>Please enable Javascript or switch to a different browser.<span></noscript>
@@ -68,7 +76,7 @@ if (!isset($_COOKIE["token"]) || !isValidToken($_COOKIE["token"])) {
 			<textarea rows="1" placeholder="Message #" maxlength="2000" id="messageInput" disabled></textarea>
 		</div>
 		<div class="side column">
-			<div class="columnInfo">All users</div>
+			<div class="columnInfo"><div>All users</div></div>
 			<div id="usersList"></div>
 			<div class="empty"></div>
 		</div>

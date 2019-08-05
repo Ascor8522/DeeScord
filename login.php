@@ -23,7 +23,7 @@ if (isset($_COOKIE["token"]) && isValidToken($_COOKIE["token"])) {
 	<link rel="stylesheet" type="text/css" href="/resource/css/common.css" />
 	<link rel="stylesheet" type="text/css" href="/resource/css/scroll.css" />
 	<link rel="stylesheet" type="text/css" href="/resource/css/login/login.css" />
-	<title>Login</title>
+	<title>Deescord - Login</title>
 	<link rel="icon" type="image/ico" href="/favicon.ico">
 
 	<link rel="apple-touch-startup-image" href="/resource/icon/favicon-256.png" media="(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2)" />
@@ -38,12 +38,13 @@ if (isset($_COOKIE["token"]) && isValidToken($_COOKIE["token"])) {
 <body>
 	<main>
 		<form action="/include/login.php" method="POST">
+			<img src="/resource/icon/favicon.svg" alt="Deescord logo" title="Deescord"/>
 			<label for="login">Login:</label>
-			<input id="login" type="text" name="login" autocomplete="nickname" required />
+			<input id="login" type="text" name="login" autocomplete="nickname" title="Login" required />
 			<label for="password">Password:</label>
-			<input id="password" type="password" name="password" autocomplete="current-password" required />
-			<input type="submit" name="button" value="Log in" class="blue" />
-			<a href="/signup.php">Sign up</a>
+			<input id="password" type="password" name="password" autocomplete="current-password" title="Password" required />
+			<input type="submit" name="button" value="Log in" class="blue" title="Log in" />
+			<a href="/signup.php" title="Sign up">Sign up</a>
 		</form>
 	</main>
 </body>
