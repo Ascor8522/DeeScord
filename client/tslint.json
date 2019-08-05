@@ -12,7 +12,8 @@
         "no-string-literal": false,
         "object-literal-sort-keys":true,
         "variable-name": [true, "allow-leading-underscore"],
-        "class-name": false
+        "class-name": false,
+        "no-shadowed-variable": false
     },
     "rulesDirectory": []
 }

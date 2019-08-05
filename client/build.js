@@ -9,7 +9,7 @@ function exploreDir(path, indent) {
 			let doc = fs.readFileSync(`${path}/${element}`, 'utf8');
 			doc = doc.replace(/import { (.+) } from "(.+)";/gim, "import { $1 } from \"$2.js\";");
 			fs.writeFileSync(`${path}/${element}`, doc, 'utf8');
-			fs.appendFileSync(`${path}/${element}`, `\n// Fixed at ${new Date().toString()}`, 'utf8');
+			fs.appendFileSync(`${path}/${element}`, `\n// Fixed at ${new Date().toString()} on ${require("os").hostname()} (${process.platform} ${process.arch})`, 'utf8');
 		} else {
 			console.log(`${"\t".repeat(indent)}└Entering dir ${path}/${element}`);
 			exploreDir(`${path}/${element}`, indent+1);
