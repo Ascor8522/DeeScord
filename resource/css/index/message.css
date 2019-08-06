@@ -2,7 +2,11 @@
 	min-width: 0px;
 }
 
-c-message {
+/*
+ * Message
+ */
+c-message,
+c-convo {
 	clear: both;
 	display: flex;
 	float: left;
@@ -10,86 +14,84 @@ c-message {
 	margin-top: 10px;
 }
 
-c-message>* {
-	display: inline-block;
+/*
+ * Own message reversed
+ */
+c-message.own,
+c-convo.own {
+	flex-direction: row-reverse;
+	float: right;
 }
 
-c-message .userIcon {
+/*
+ * All convos
+ */
+c-convo {
+	margin: 0px;
+}
+
+/*
+ * Own convos
+ */
+c-convo.own {
+	margin-right: 50px;
+}
+
+/*
+ * Other's convos
+ */
+c-convo:not(.own) {
+	margin-left: 50px;
+}
+
+/*
+ * User icon in message
+ */
+c-message>span>img.userIcon,
+c-convo>span>img.userIcon {
 	border-radius: 100%;
 	height: 40px;
 	object-fit: cover;
 	width: 40px;
 }
 
-c-message .userIcon:hover {
+/*
+ * User icon in message hover
+ */
+c-message>span>img.userIcon:hover {
 	cursor: pointer;
 }
 
-c-message .messageAuthor {
-	display: inline-block;
-	font-size: 16px;
-	font-weight: bolder;
-	margin-right: 10px;
-	white-space: nowrap;
+/*
+ * hides the author icon, author name and date in a convo
+ */
+c-convo>span:first-child,
+c-convo>span:last-child>*:not(.messageContent) {
+	display: none;
 }
 
-c-message .messageAuthor:hover {
-	cursor: pointer;
-	text-decoration: underline;
-}
-
-c-message .messageTimestamp {
-	display: inline-block;
-	font-size: 12px;
-	font-weight: 400;
-	white-space: nowrap;
-}
-
-c-message .messageContent {
-	font-size: 15px;
-	font-weight: 300;
-	word-break: break-word;
-}
-
-c-message .messageContent code {
-	font-family: monospace;
-}
-
-c-message .messageContent pre, c-message .messageContent code {
-	background-color: var(--medium);
-	border-radius: 5px;
-	margin: 0px;
-	padding: 5px;
-	width: fit-content;
-}
-
-c-message.own .messageContent pre, c-message.own .messageContent code {
-	background-color: var(--accentDarker);
-}
-
-c-message .messageContent * {
-	user-select: text !important;
-	-moz-user-select: none !important;
-}
-
-c-message>*:last-child {
+/*
+ * Message bubble
+ */
+c-message>span:last-child,
+c-convo>span:last-child {
 	background-color: var(--light);
 	border-bottom-left-radius: 0px;
 	border-radius: 10px;
 	color: var(--text);
 	margin-left: 10px;
 	margin-right: 50px;
-	padding: 20px;
+	min-width: 30px;
+	padding: 10px;
 	padding-bottom: 10px;
 	padding-top: 10px;
 }
 
-c-message.own {
-	flex-direction: row-reverse;
-	float: right;
-}
-
-c-message.own>*:last-child {
+/*
+ * Own message bubble
+ */
+c-message.own>span:last-child,
+c-convo.own>span:last-child {
 	background-color: var(--accent);
 	border-bottom-left-radius: 10px;
 	border-bottom-right-radius: 0px;
@@ -97,25 +99,160 @@ c-message.own>*:last-child {
 	margin-right: 10px;
 }
 
-c-message.own+c-message.own {
-	margin-top: -20px;
+c-message.own>span:last-child {
+	text-align: right;
 }
 
-c-message.own+c-message.own>span:first-child {
-	display: none;
+/*
+ * Message bubble
+ */
+c-message:not(.own)>span:last-child,
+c-convo:not(.own)>span:last-child {
+	border-bottom-left-radius: 0px;
 }
 
-c-message.own+c-message.own>span:last-child {
-	margin-right: 50px;
+/*
+ * Message author
+ */
+c-message>span>span.messageAuthor,
+c-convo>span>span.messageAuthor {
+	display: inline-block;
+	font-size: 16px;
+	font-weight: bolder;
+	margin-right: 10px;
+	white-space: nowrap;
 }
 
-c-message.own+c-message.own>span:last-child>span {
-	display: none;
+/*
+ * Message author
+ */
+c-message>span>span.messageAuthor:hover,
+c-convo>span>span.messageAuthor:hover {
+	cursor: pointer;
+	text-decoration: underline;
 }
 
-c-message>span>*:not(img) {
+/*
+ * Message timestamp
+ */
+c-message>span>span.messageTimestamp,
+c-convo>span>span.messageTimestamp {
+	display: inline-block;
+	font-size: 12px;
+	font-weight: 400;
+	white-space: nowrap;
+}
+
+/*
+ * Message content
+ */
+c-message>span>div.messageContent {
+	padding-top: 10px;
+}
+
+/*
+ * Message content
+ */
+c-message>span>div.messageContent,
+c-convo>span>div.messageContent {
+	font-size: 15px;
+	font-weight: 300;
+	margin-left: 5px;
+	margin-right: 5px;
+	word-break: break-word;
+}
+
+/*
+ * Code block in message content
+ */
+c-message>span>div.messageContent code,
+c-convo>span>div.messageContent code {
+	font-family: monospace;
+}
+
+/*
+ * Pre block / Code block in message content
+ */
+c-message>span>div.messageContent pre,
+c-message>span>div.messageContent code,
+c-convo>span>div.messageContent pre,
+c-convo>span>div.messageContent code {
+	background-color: var(--medium);
+	border-radius: 5px;
+	margin: 0px;
+	padding: 5px;
+	width: fit-content;
+	display: inline-block;
+}
+
+/*
+ * Pre block / Code block in message content
+ */
+c-message>span>div.messageContent pre:not(:first-child),
+c-message>span>div.messageContent code:not(:first-child),
+c-convo>span>div.messageContent pre:not(:first-child),
+c-convo>span>div.messageContent code:not(:first-child) {
+	margin-top: 10px;
+}
+
+/*
+ * Pre block / Code block in own message content
+ * Color fix
+ */
+c-message.own>span>div.messageContent pre,
+c-message.own>span>div.messageContent code,
+c-convo.own>span>div.messageContent pre,
+c-convo.own>span>div.messageContent code {
+	background-color: var(--accentDarker);
+}
+
+*:not(.own)>span>div.messageContent a,
+*:not(.own)>span>div.messageContent a:visited {
+	color: #0096cf;
+}
+
+*.own>span>div.messageContent a,
+*.own>span>div.messageContent a:visited {
+	color: #204198;
+}
+
+/*
+ * Convo fix bubble
+ */
+c-convo:not(.own)>span:last-child {
+	border-bottom-left-radius: 0px;
+	border-top-left-radius: 0px;
+}
+
+/*
+ * Own convo fix bubble
+ */
+c-convo.own>span:last-child {
+	border-bottom-right-radius: 0px;
+	border-top-right-radius: 0px;
+}
+
+/*
+ * Avoid selecting message content
+ */
+
+c-message>span>div.messageContent *,
+c-convo>span>div.messageContent * {
+	user-select: text !important;
+	-moz-user-select: none !important;
+}
+
+c-message>span>*:not(img),
+c-convo>span>*:not(img) {
 	user-select: text;
 	-moz-user-select: none;
+}
+
+/*
+ * Convo linked to message
+ */
+c-message+c-convo {
+	margin-top: -10px;
 }
 
 c-unread {
@@ -126,14 +263,13 @@ c-unread {
 
 c-unread>div {
 	background-color: var(--dnd);
-	;
 	display: inline-block;
 	height: 1px;
 	margin-left: 20px;
 	margin-right: 20px;
 	margin: auto;
-	width: -webkit-fill-available;
 	width: -moz-available;
+	width: -webkit-fill-available;
 }
 
 c-unread>span {
@@ -142,6 +278,7 @@ c-unread>span {
 }
 
 textarea#messageInput {
+	-moz-user-select: none;
 	background-color: var(--light);
 	border-radius: 5px;
 	border: none;
@@ -159,7 +296,6 @@ textarea#messageInput {
 	padding: 10px;
 	resize: none;
 	user-select: none;
-	-moz-user-select: none;
 	white-space: pre-wrap;
 	width: calc(100% - 60px);
 }

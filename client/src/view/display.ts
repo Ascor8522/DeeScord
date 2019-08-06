@@ -1,4 +1,5 @@
 import { C_Channel } from "../components/c_channel";
+import { C_Convo } from "../components/c_convo";
 import { C_Message } from "../components/c_message";
 import { C_User } from "../components/c_user";
 import { Client } from "../controller/client";
@@ -127,8 +128,12 @@ export class Display {
 			cChannel.enable();
 		});
 
+		let previousMessageAuthor: number | null = null;
+		let previousMessageTimestamp: number | null = null;
 		channel.getChannelMessages.forEach((message) => {
-			this.addMessage(message);
+			this.addMessage(message, message.getMessageAuthorId === previousMessageAuthor && Math.floor(message.getMessageTimestamp / (60 * 1000)) === Math.floor((previousMessageTimestamp || 0) / (60 * 1000)));
+			previousMessageAuthor = message.getMessageAuthorId;
+			previousMessageTimestamp = message.getMessageTimestamp;
 		});
 
 		this.toArray(this.channelsList.childNodes)
@@ -159,9 +164,14 @@ export class Display {
 	/**
 	 * Adds a message
 	 * @param {Message} message the message to add
+	 * @param {boolean} sameAuthor true if the author of the previous message is the same
 	 */
-	public addMessage(message: Message): void {
-		this.messagesList.appendChild(new C_Message(message, this.client));
+	public addMessage(message: Message, sameAuthor: boolean): void {
+		if (sameAuthor) {
+			this.messagesList.appendChild(new C_Convo(message, this.client));
+		} else {
+			this.messagesList.appendChild(new C_Message(message, this.client));
+		}
 		this.messagesList.scrollTo(0, this.messagesList.scrollHeight);
 	}
 
@@ -171,8 +181,8 @@ export class Display {
 	 */
 	public removeMessage(messageId: number): void {
 		this.toArray(this.messagesList.childNodes)
-		.filter((cMessage: HTMLElement) => cMessage instanceof C_Message && cMessage.getMessage.getMessageId === messageId)
-		.forEach((cMessage: C_Message) => {
+		.filter((cMessage: HTMLElement) => (cMessage instanceof C_Message || cMessage instanceof C_Convo) && cMessage.getMessage.getMessageId === messageId)
+		.forEach((cMessage: C_Message | C_Convo) => {
 			this.messagesList.removeChild(cMessage);
 		});
 	}
@@ -183,8 +193,8 @@ export class Display {
 	 */
 	public updateMessage(message: Message): void {
 		this.toArray(this.messagesList.childNodes)
-		.filter((cMessage: HTMLElement) => cMessage instanceof C_Message && cMessage.getMessage.getMessageId === message.getMessageId)
-		.forEach((cMessage: C_Message) => {
+		.filter((cMessage: HTMLElement) => (cMessage instanceof C_Message || cMessage instanceof C_Convo) && cMessage.getMessage.getMessageId === message.getMessageId)
+		.forEach((cMessage: C_Message | C_Convo) => {
 			cMessage.update();
 		});
 	}

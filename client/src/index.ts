@@ -1,4 +1,5 @@
 import { C_Channel } from "./components/c_channel";
+import { C_Convo } from "./components/c_convo";
 import { C_Message } from "./components/c_message";
 import { C_Unread } from "./components/c_unread";
 import { C_User } from "./components/c_user";
@@ -10,6 +11,7 @@ import { xhr } from "./xhr";
 		customElements.define("c-user", C_User);
 		customElements.define("c-channel", C_Channel);
 		customElements.define("c-message", C_Message);
+		customElements.define("c-convo", C_Convo);
 		customElements.define("c-unread", C_Unread);
 	} catch (e) {
 		console.error("Could not define custom elements");

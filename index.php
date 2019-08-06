@@ -17,6 +17,7 @@ if (!isset($_COOKIE["token"]) || !isValidToken($_COOKIE["token"])) {
 	<meta charset="UTF-8" />
 	<meta name="viewport" content="width=device-width" />
 	<!--<base href="https://test.ascor.ml/">-->
+	<link rel="canonical" href="https://test.ascor.ml/" />
 	<meta http-equiv="X-UA-Compatible" content="ie=edge" />
 	<meta name="description" content="Chat">
 	<meta name="theme-color" content="#36393F">
@@ -73,7 +74,7 @@ if (!isset($_COOKIE["token"]) || !isValidToken($_COOKIE["token"])) {
 			<div id="messagesList">
 				<noscript><span class="noscript">Your browser does not support JavaScript!<br>Please enable Javascript or switch to a different browser.<span></noscript>
 			</div>
-			<textarea rows="1" placeholder="Message #" maxlength="2000" id="messageInput" disabled></textarea>
+			<textarea rows="1" placeholder="Message #" maxlength="2000" id="messageInput" title="Send message" disabled></textarea>
 		</div>
 		<div class="side column">
 			<div class="columnInfo"><div>All users</div></div>

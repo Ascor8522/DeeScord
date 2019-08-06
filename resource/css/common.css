@@ -2,6 +2,7 @@
 	font-family: Whitney;
 	font-style: normal;
 	font-weight: 700;
+	font-display: auto;
 	src: url("/resource/font/Whitney\ Bold\ Regular.ttf");
 }
 
@@ -9,6 +10,7 @@
 	font-family: Whitney;
 	font-style: normal;
 	font-weight: 300;
+	font-display: auto;
 	src: url("/resource/font/Whitney\ Book\ Regular.ttf");
 }
 
@@ -16,6 +18,7 @@
 	font-family: Whitney;
 	font-style: normal;
 	font-weight: 500;
+	font-display: auto;
 	src: url("/resource/font/Whitney\ Medium\ Regular.ttf");
 }
 
@@ -23,6 +26,7 @@
 	font-family: Whitney;
 	font-style: normal;
 	font-weight: 600;
+	font-display: auto;
 	src: url("/resource/font/Whitney\ Semibold\ Regular.ttf");
 }
 

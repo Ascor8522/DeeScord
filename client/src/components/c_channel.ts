@@ -50,6 +50,8 @@ export class C_Channel extends HTMLElement {
 		if (this.domChannelName.innerHTML !== clean(this.channel.getChannelName)) {
 			this.domChannelName.innerHTML = clean(this.channel.getChannelName);
 		}
+
+		this.title = `Channel ${clean(this.channel.getChannelName)}`;
 	}
 
 	/**

@@ -5,7 +5,7 @@
 export function clean(input: string): string {
 	input = input.trim();
 
-	input = replaceAll(input, /\&/g, "&amp;");
+	input = replaceAll(input, /&(?!amp;)/g, "&amp;");
 	input = replaceAll(input, /\</g, "&lt;");
 	input = replaceAll(input, /\>/g, "&gt;");
 	input = replaceAll(input, /\"/g, "&quot;");
@@ -16,16 +16,18 @@ export function clean(input: string): string {
 }
 
 export function format(input: string): string {
-	input = replaceAll(input, /\`\`\`[\n]{0,}(.+)[\n]{0,}\`\`\`/g, "<code>$1</code>");
+	input = replaceAll(input, /```(?:[\n]|<br>)*((?:[\n]|.)*)(?:[\n]|<br>)*```/g, "<code>$1</code>");
 	input = replaceAll(input, /\n/g, "<br>");
-	input = replaceAll(input, /\`(.+)\`/g, "<pre>$1</pre>");
-	// input = replaceAll(input, /\*\*\*(.+)\*\*\*/g, "<b><i>$1</i></b>");
+	input = replaceAll(input, /`(?:[\n]|<br>)*((?:[\n]|.)*)(?:[\n]|<br>)*`/g, "<pre>$1</pre>");
 	input = replaceAll(input, /\*\*(.+)\*\*/g, "<b>$1</b>");
 	input = replaceAll(input, /\*(.+)\*/g, "<i>$1</i>");
 	input = replaceAll(input, /\_\_(.+)\_\_/g, "<u>$1</u>");
 	input = replaceAll(input, /\~\~(.+)\~\~/g, "<s>$1</s>");
 	input = replaceURL(input, /[a-z][a-z0-9+.-]*:\/\/(?:(?:[a-z0-9][-a-z0-9@:%._\+~#=]*\.[a-z]{2,6})|(?:[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3})|(?:[a-z0-9]))(?:[-a-z0-9@:%_\+.~#?&/=()]*)?/gi);
-	input = replaceAll(input, /\/shrug (.+)/g, "$1 ¯\\_(ツ)_/¯");
+	input = replaceAll(input, /^\/shrug(?:$| ((?:.|\n)*))/g, "$1 ¯\\_(ツ)_/¯");
+	input = replaceAll(input, /^\/tableflip(?:$| ((?:.|\n)*))/g, "$1 ¯(╯°□°）╯︵ ┻━┻");
+	input = replaceAll(input, /^\/unflip(?:$| ((?:.|\n)*))/g, "$1 ¯┬─┬ ノ( ゜-゜ノ)");
+	input = replaceAll(input, /^\/me(?:$| ((?:.|\n)*))/g, "<i>$1</i>");
 
 	return input;
 }
@@ -37,7 +39,20 @@ export function format(input: string): string {
  * @param {string} after the string as replacement
  */
 function replaceAll(input: string, before: RegExp, after: string): string {
-	return input.split(before).join(after);
+	while (before.test(input)) {
+		input = input.replace(before, after);
+	}
+	return input;
+}
+
+/**
+ * Replaces all patterns
+ * @param {string} input the message to replace
+ * @param {RegExp} before the regex of what to remaplce
+ * @param {string} after the string as replacement
+ */
+function replaceFirst(input: string, before: RegExp, after: string): string {
+	return input.replace(before, after);
 }
 
 /**

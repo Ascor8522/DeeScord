@@ -137,7 +137,9 @@ export class EventHandler {
 							});
 					}
 					if (response.data.messageChannelId === this.client.currentChannelId) {
-						this.client.display.addMessage(message);
+						this.client.display.addMessage(message,
+							this.client.getCurrentChannel()!.getChannelMessages[this.client.getCurrentChannel()!.getChannelMessages.length - 2].getMessageAuthorId === message.getMessageAuthorId
+							&& Math.floor((this.client.getCurrentChannel()!.getChannelMessages[this.client.getCurrentChannel()!.getChannelMessages.length - 2].getMessageTimestamp || 0) / (60 * 1000)) === Math.floor(message.getMessageTimestamp / (60 * 1000)));
 					} else if (this.client.getCurrentUser().getUserStatus !== UserStatus.DND) {
 						new Audio("/resource/mp3/notification.mp3").play();
 					}

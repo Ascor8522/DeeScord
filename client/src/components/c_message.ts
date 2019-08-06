@@ -37,6 +37,7 @@ export class C_Message extends HTMLElement {
 		}
 
 		this.domMessageAuthorIcon.className = "userIcon";
+		this.domMessageAuthorIcon.alt = "/resource/icon/user.svg";
 
 		this.domMessageAuthor.className = "messageAuthor";
 
@@ -84,6 +85,8 @@ export class C_Message extends HTMLElement {
 		if (this.domMessageContent.innerHTML !== format(clean(this.message.getMessageContent))) {
 			this.domMessageContent.innerHTML = format(clean(this.message.getMessageContent));
 		}
+
+		this.title = `Sent ${this.displayDate(this.message.getMessageTimestamp)} by ${clean(this.client.getUserNameById(this.message.getMessageAuthorId))}`;
 	}
 
 	/**
