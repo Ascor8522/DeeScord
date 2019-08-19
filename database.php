@@ -57,6 +57,7 @@ function getMessages($channelId) {
 		"SELECT messageId, messageAuthorId, messageTimestamp, messageContent
 		FROM messages
 		WHERE messageChannelId = ?
+		AND messageDeleted != 'true'
 		ORDER BY messageTimestamp");
 	$stmt->execute([$channelId]);
 	return $stmt->fetchAll(PDO::FETCH_ASSOC);

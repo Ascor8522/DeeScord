@@ -1,3 +1,7 @@
+import { C_Mention } from "../components/c_mention";
+import { Client } from "../controller/client";
+import { User } from "../interfaces/user";
+
 /**
  * Cleans and parses text to avoid html/javascript injection
  * @param {string} input the messageto clean
@@ -25,11 +29,34 @@ export function format(input: string): string {
 	input = replaceAll(input, /\~\~(.+)\~\~/g, "<s>$1</s>");
 	input = replaceURL(input, /[a-z][a-z0-9+.-]*:\/\/(?:(?:[a-z0-9][-a-z0-9@:%._\+~#=]*\.[a-z]{2,6})|(?:[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3})|(?:[a-z0-9]))(?:[-a-z0-9@:%_\+.~#?&/=()]*)?/gi);
 	input = replaceAll(input, /^\/shrug(?:$| ((?:.|\n)*))/g, "$1 ¯\\_(ツ)_/¯");
-	input = replaceAll(input, /^\/tableflip(?:$| ((?:.|\n)*))/g, "$1 ¯(╯°□°）╯︵ ┻━┻");
-	input = replaceAll(input, /^\/unflip(?:$| ((?:.|\n)*))/g, "$1 ¯┬─┬ ノ( ゜-゜ノ)");
+	input = replaceAll(input, /^\/tableflip(?:$| ((?:.|\n)*))/g, "$1 (╯°□°）╯︵ ┻━┻");
+	input = replaceAll(input, /^\/unflip(?:$| ((?:.|\n)*))/g, "$1 ┬─┬ ノ( ゜-゜ノ)");
 	input = replaceAll(input, /^\/me(?:$| ((?:.|\n)*))/g, "<i>$1</i>");
 
 	return input;
+}
+
+export function replaceTagsNamesToIds(input: string, client: Client): string {
+	return replaceAll(input, /\@([a-zA-Z0-9])/g, (match: string, p1: string): string => { // TODO
+		const mention: User | undefined = client.getUsers.find((user: User) => user.getUserName === p1);
+		if (mention) {
+			return `<@${mention.getUserId.toString()}>`;
+		} else {
+			return match;
+		}
+	});
+}
+
+export function replaceTagsIdsToNames(input: string, client: Client): string {
+	return replaceAll(input, /&lt;@(.+)&gt;/g, (match: string, p1: string): string => {
+		if (p1 === "everyone") {
+			return new C_Mention("everyone", client).outerHTML;
+		}
+
+		const mention: User | undefined = client.getUsers.find((user: User) => user.getUserId.toString() === p1);
+
+		return mention ? new C_Mention(mention, client).outerHTML : match;
+	});
 }
 
 /**
@@ -38,9 +65,17 @@ export function format(input: string): string {
  * @param {RegExp} before the regex of what to remaplce
  * @param {string} after the string as replacement
  */
-function replaceAll(input: string, before: RegExp, after: string): string {
+function replaceAll(input: string, before: RegExp, after: string | ((match: string, p1: string) => string)): string {
+	let i = 0;
 	while (before.test(input)) {
-		input = input.replace(before, after);
+		input = typeof after === "string" ? input.replace(before, after) : input.replace(before, after);
+		i++;
+		if (i < 20) {
+			console.error("replace loop");
+			console.error(input);
+			console.error(after);
+			break;
+		}
 	}
 	return input;
 }

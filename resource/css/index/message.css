@@ -239,13 +239,13 @@ c-convo.own>span:last-child {
 c-message>span>div.messageContent *,
 c-convo>span>div.messageContent * {
 	user-select: text !important;
-	-moz-user-select: none !important;
+	-moz-user-select: text !important;
 }
 
 c-message>span>*:not(img),
 c-convo>span>*:not(img) {
 	user-select: text;
-	-moz-user-select: none;
+	-moz-user-select: text;
 }
 
 /*
@@ -253,6 +253,51 @@ c-convo>span>*:not(img) {
  */
 c-message+c-convo {
 	margin-top: -10px;
+}
+
+c-mention {
+	border-radius: 5px;
+	cursor: pointer;
+	font-weight: 600;
+	padding: 2px;
+}
+
+c-mention:hover {
+	z-index: 10;
+}
+
+c-message.own c-mention:not(.me) {
+	background-color: var(--accentDarker);
+}
+
+c-message.own c-mention:not(.me):hover {
+	background-color: var(--accentLighter);
+}
+
+c-message.own c-mention.me {
+	background-color: var(--accentDarkest);
+	color: var(--text);
+}
+
+c-message.own c-mention.me:hover {
+	background-color: var(--accentLighter);
+}
+
+c-message:not(.own) c-mention:not(.me) {
+	background-color: var(--main);
+}
+
+c-message:not(.own) c-mention:not(.me):hover {
+	background-color: var(--lighter);
+	color: var(--darkest);
+}
+
+c-message:not(.own) c-mention.me {
+	background-color: var(--accentDarker);
+}
+
+c-message:not(.own) c-mention.me:hover {
+	background-color: var(--accent);
 }
 
 c-unread {

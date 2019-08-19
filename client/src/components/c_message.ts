@@ -1,6 +1,6 @@
 import { Client } from "../controller/client";
 import { Message } from "../interfaces/message";
-import { clean, format } from "../utils/cleaner";
+import { clean, format, replaceTagsIdsToNames } from "../utils/cleaner";
 
 /**
  * Represents a message
@@ -37,7 +37,7 @@ export class C_Message extends HTMLElement {
 		}
 
 		this.domMessageAuthorIcon.className = "userIcon";
-		this.domMessageAuthorIcon.alt = "/resource/icon/user.svg";
+		this.domMessageAuthorIcon.alt = "/resource/img/user.svg";
 
 		this.domMessageAuthor.className = "messageAuthor";
 
@@ -82,8 +82,8 @@ export class C_Message extends HTMLElement {
 			this.domMessageAuthorIcon.src = this.client.getUserIconById(this.message.getMessageAuthorId);
 		}
 
-		if (this.domMessageContent.innerHTML !== format(clean(this.message.getMessageContent))) {
-			this.domMessageContent.innerHTML = format(clean(this.message.getMessageContent));
+		if (this.domMessageContent.innerHTML !== replaceTagsIdsToNames(format(clean(this.message.getMessageContent)), this.client)) {
+			this.domMessageContent.innerHTML = replaceTagsIdsToNames(format(clean(this.message.getMessageContent)), this.client);
 		}
 
 		this.title = `Sent ${this.displayDate(this.message.getMessageTimestamp)} by ${clean(this.client.getUserNameById(this.message.getMessageAuthorId))}`;
@@ -113,7 +113,7 @@ export class C_Message extends HTMLElement {
 				str = `Yesterday at ${date.toLocaleTimeString().slice(0, -3)}`;
 				break;
 			case timestamp >= week.getTime():
-				str = `Last ${["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Daturday"][date.getDay()]} at ${date.toLocaleTimeString().slice(0, -3)}`;
+				str = `Last ${["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"][date.getDay()]} at ${date.toLocaleTimeString().slice(0, -3)}`;
 				break;
 			default:
 				return `${date.toLocaleDateString()} at ${date.toLocaleTimeString().slice(0, -3)}`;

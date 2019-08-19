@@ -24,21 +24,21 @@ if (isset($_COOKIE["token"]) && isValidToken($_COOKIE["token"])) {
 	<link rel="stylesheet" type="text/css" href="/resource/css/scroll.css" />
 	<link rel="stylesheet" type="text/css" href="/resource/css/login/login.css" />
 	<title>Deescord - Sign up</title>
-	<link rel="icon" type="image/ico" href="/favicon.ico">
+	<link rel="icon" type="image/ico" href="/resource/img/favicon/favicon.ico">
 
-	<link rel="apple-touch-startup-image" href="/resource/icon/favicon-256.png" media="(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2)" />
-	<link rel="apple-touch-startup-image" href="/resource/icon/favicon-256.png" media="(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2)" />
-	<link rel="apple-touch-startup-image" href="/resource/icon/favicon-512.png" media="(device-width: 621px) and (device-height: 1104px) and (-webkit-device-pixel-ratio: 3)" />
-	<link rel="apple-touch-startup-image" href="/resource/icon/favicon-512.png" media="(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3)" />
-	<link rel="apple-touch-startup-image" href="/resource/icon/favicon-512.png" media="(device-width: 768px) and (device-height: 1024px) and (-webkit-device-pixel-ratio: 2)" />
-	<link rel="apple-touch-startup-image" href="/resource/icon/favicon-512.png" media="(device-width: 834px) and (device-height: 1112px) and (-webkit-device-pixel-ratio: 2)" />
-	<link rel="apple-touch-startup-image" href="/resource/icon/favicon-512.png" media="(device-width: 1024px) and (device-height: 1366px) and (-webkit-device-pixel-ratio: 2)" />
+	<link rel="apple-touch-startup-image" href="/resource/img/favicon/favicon-256.png" media="(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2)" />
+	<link rel="apple-touch-startup-image" href="/resource/img/favicon/favicon-256.png" media="(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2)" />
+	<link rel="apple-touch-startup-image" href="/resource/img/favicon/favicon-512.png" media="(device-width: 621px) and (device-height: 1104px) and (-webkit-device-pixel-ratio: 3)" />
+	<link rel="apple-touch-startup-image" href="/resource/img/favicon/favicon-512.png" media="(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3)" />
+	<link rel="apple-touch-startup-image" href="/resource/img/favicon/favicon-512.png" media="(device-width: 768px) and (device-height: 1024px) and (-webkit-device-pixel-ratio: 2)" />
+	<link rel="apple-touch-startup-image" href="/resource/img/favicon/favicon-512.png" media="(device-width: 834px) and (device-height: 1112px) and (-webkit-device-pixel-ratio: 2)" />
+	<link rel="apple-touch-startup-image" href="/resource/img/favicon/favicon-512.png" media="(device-width: 1024px) and (device-height: 1366px) and (-webkit-device-pixel-ratio: 2)" />
 </head>
 
 <body>
 	<main>
 		<form action="/include/signup.php" method="POST">
-			<img src="/resource/icon/favicon.svg" title="Deescord" alt="Deescord logo"/>
+			<img src="/resource/img/favicon/favicon.svg" title="Deescord" alt="Deescord logo"/>
 			<label for="login">Login:</label>
 			<input id="login" type="text" name="login" autocomplete="nickname" title="Login" required />
 			<label for="password">Password:</label>

@@ -40,6 +40,7 @@
 
 	--text: #ffffffb3;
 
+	--accentLighter: #8B9EE0;
 	--accent: #7289DA;
 	--accentDarker: #5d76cf;
 	--accentDarkest: #4d66c0;
@@ -57,6 +58,11 @@
 	font-family: Whitney, "Helvetica Neue", Helvetica, Arial, sans-serif;
 	user-select: none;
 	-moz-user-select: none;
+}
+
+*::selection, input {
+	background-color: #00000080;
+	color: var(--text);
 }
 
 body,
@@ -80,6 +86,31 @@ main {
 	font-size: xx-large;
 	font-weight: bolder;
 	margin: auto;
+}
+
+input {
+	-moz-user-select: text;
+	background-color: transparent;
+	border-radius: 5px;
+	border: none;
+	color: var(--text);
+	cursor: text;
+	font-size: 16px;
+	font-weight: bold;
+	line-height: 16px;
+	outline: none;
+	overflow: hidden;
+	padding: 5px;
+	text-overflow: ellipsis;
+	user-select: text;
+}
+
+input:hover {
+	background-color: #00000030;
+}
+
+input:focus {
+	background-color: var(--light);
 }
 
 button,
@@ -120,29 +151,6 @@ input[type=submit]:not(:disabled):active {
 
 *:disabled {
 	filter: opacity(30%);
-}
-
-input {
-	background-color: transparent;
-	border-radius: 5px;
-	border: none;
-	color: var(--text);
-	cursor: text;
-	font-size: 16px;
-	font-weight: bold;
-	line-height: 16px;
-	outline: none;
-	overflow: hidden;
-	padding: 5px;
-	text-overflow: ellipsis;
-}
-
-input:hover {
-	background-color: #00000030;
-}
-
-input:focus {
-	background-color: var(--light);
 }
 
 .blue {

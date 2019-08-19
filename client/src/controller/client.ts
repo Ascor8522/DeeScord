@@ -43,6 +43,9 @@ export class Client {
 
 		try {
 			this.socket = new WebSocket(`${this.url.socket.protocol}://${this.url.socket.url}${window.document.location.host === "localhost" ? ":" + this.url.socket.port : ""}`);
+			this.socket.onerror = () => {
+				alert("Disconected from server");
+			};
 		} catch (error) {
 			console.error("Could not create socket");
 		}
@@ -152,6 +155,6 @@ export class Client {
 	 */
 	public getUserIconById(userId: number): string {
 		const result: User | undefined = this.users.find((user) => user.getUserId === userId);
-		return result ? (result.getUserIcon ? result.getUserIcon : "/resource/icon/user.svg") : "/resource/icon/user.svg";
+		return result ? (result.getUserIcon ? result.getUserIcon : "/resource/img/user.svg") : "/resource/img/user.svg";
 	}
 }

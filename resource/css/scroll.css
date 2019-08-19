@@ -1,3 +1,11 @@
+* {
+	scroll-behavior: smooth;
+	scroll-snap-align: center;
+	scroll-snap-type: x mandatory;
+	scrollbar-width: thin;
+    scrollbar-color: var(--darkest) var(--main);
+}
+
 ::-webkit-scrollbar-button {
 	background-color: transparent;
 }

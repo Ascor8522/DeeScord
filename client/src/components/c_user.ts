@@ -57,8 +57,8 @@ export class C_User extends HTMLElement {
 			this.domUserName.innerHTML = clean(this.user.getUserName);
 		}
 
-		if (this.domUserIcon.src !== this.user.getUserIcon ? this.user.getUserIcon : "/resource/icon/user.svg") {
-			this.domUserIcon.src = this.user.getUserIcon ? this.user.getUserIcon : "/resource/icon/user.svg";
+		if (this.domUserIcon.src !== this.user.getUserIcon ? this.user.getUserIcon : "/resource/img/user.svg") {
+			this.domUserIcon.src = this.user.getUserIcon ? this.user.getUserIcon : "/resource/img/user.svg";
 		}
 
 		this.title = `User ${clean(this.user.getUserName)}`;

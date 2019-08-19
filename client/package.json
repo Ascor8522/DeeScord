@@ -1,13 +1,13 @@
 {
   "name": "chat",
   "version": "1.0.0",
-  "description": "",
+  "description": "Client for Deescord app",
   "main": "index.js",
   "scripts": {
     "build": "tsc && node build.js"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "Ascor",
+  "license": "MIT",
   "devDependencies": {
     "tslint": "^5.16.0",
     "typescript": "^3.4.5"
