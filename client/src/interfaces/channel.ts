@@ -1,67 +1,79 @@
-import { Message } from "./message";
+import { Message } from "./Message";
 
 /**
  * Represents a channel
  */
 export class Channel {
-	private channelId: number;
-	private channelFetched: boolean = false;
-	private channelLastRead: number | undefined = 0;
-	private channelMessages: Message[] = [];
-	private channelName: string;
-	private channelTopic: string;
+	private fetched: boolean = false;
+	private id: number;
+	private lastReadMessageId: number | undefined = 0;
+	private messages: Message[] = [];
+	private name: string;
+	private topic: string;
 
 	/**
 	 * Creates a new channel
-	 * @param {number} channelId the id of the channel
-	 * @param {number} channelLastRead the id of the last message read
-	 * @param {Array} channelMessages the messages of the channel
-	 * @param {string} channelName the name of the channel
-	 * @param {string} channelTopic the topic of the channel
+	 * @param {number} id the id of the channel
+	 * @param {number} lastReadMessageId the id of the last message read
+	 * @param {Array} messages the messages of the channel
+	 * @param {string} name the name of the channel
+	 * @param {string} topic the topic of the channel
 	 */
-	constructor(channelId: number = 0, channelLastRead: number = 0, channelMessages: Message[] = [], channelName: string = "Unnamed Channel", channelTopic: string = "Unknown Topic") {
-		this.channelId = channelId;
-		this.channelFetched = false;
-		this.channelLastRead = undefined;
-		this.channelMessages = channelMessages;
-		this.channelName = channelName;
-		this.channelTopic = channelTopic;
-	}
-
-	/**
-	 * Returns the id of the channel
-	 */
-	public get getChannelId(): number {
-		return this.channelId;
+	public constructor(id: number = 0, lastReadMessageId: number = 0, messages: Message[] = [], name: string = "Unnamed Channel", topic: string = "Unknown Topic") {
+		this.id = id;
+		this.fetched = false;
+		this.lastReadMessageId = undefined;
+		this.messages = messages;
+		this.name = name;
+		this.topic = topic;
 	}
 
 	/**
 	 * Returns true if the channel has been fetched already
 	 */
-	public get getChannelFetched(): boolean {
-		return this.channelFetched;
+	public isFetched(): boolean {
+		return this.fetched;
 	}
+
+	/**
+	 * Sets the channel as fetched
+	 */
+	public async fetch(): Promise<void> {
+		return new Promise((resolve, reject) => {
+
+		})
+		.then(() => void (this.fetched = true));
+	}
+
+	/**
+	 * Returns the id of the channel
+	 */
+	public getId(): number {
+		return this.id;
+	}
+
+
 
 	/**
 	 * Returns the id of the last message read
 	 */
-	public get getChannelLastRead(): number | undefined {
-		return this.channelLastRead;
+	public getLastReadMessageId(): number | undefined {
+		return this.lastReadMessageId;
 	}
 
 	/**
 	 * Sets the id of the last message read
 	 * @param {number} lastReadMessageId the id of the last message read
 	 */
-	public set setChannelLastRead(lastReadMessageId: number) {
-		this.channelLastRead = lastReadMessageId;
+	public readMessage(lastReadMessageId: number) {
+		this.lastReadMessageId = lastReadMessageId;
 	}
 
 	/**
 	 * Returns the messages in the channel
 	 */
-	public get getChannelMessages(): Message[] {
-		return this.channelMessages;
+	public getMessages(): Message[] {
+		return this.messages;
 	}
 
 	/**
@@ -69,41 +81,35 @@ export class Channel {
 	 * @param {Message} message the message to add
 	 */
 	public addMessage(message: Message): void {
-		this.channelMessages.push(message);
+		this.messages.push(message);
 	}
 
 	/**
 	 * Returns the name of the channel
 	 */
-	public get getChannelName(): string {
-		return this.channelName;
+	public getName(): string {
+		return this.name;
 	}
 
 	/**
 	 * Sets the name of the channel
 	 */
-	public set setChannelName(channelName: string) {
-		this.channelName = channelName;
+	public setName (channelName: string) {
+		this.name = channelName;
 	}
 
 	/**
 	 * Returns the topic of the channel
 	 */
-	public get getChannelTopic(): string {
-		return this.channelTopic;
+	public getTopic(): string {
+		return this.topic;
 	}
 
 	/**
 	 * Sets the topic of the channel
 	 */
-	public set setChannelTopic(channelTopic: string) {
-		this.channelTopic = channelTopic;
+	public setTopic (channelTopic: string) {
+		this.topic = channelTopic;
 	}
 
-	/**
-	 * Sets the channel as fetched
-	 */
-	public fetch(): void {
-		this.channelFetched = true;
-	}
 }

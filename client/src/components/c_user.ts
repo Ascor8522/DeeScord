@@ -1,11 +1,16 @@
-import { User } from "../interfaces/user";
-import { UserStatus } from "../interfaces/userStatus";
+import { User } from "../interfaces/User";
+import { UserStatus } from "../interfaces/UserStatus";
 import { clean } from "../utils/cleaner";
 
 /**
  * Reprensnts a user element
  */
 export class C_User extends HTMLElement {
+
+	public static init(): void {
+		customElements.define("c-user", C_User);
+	}
+
 	private user: User;
 
 	private domUserIcon: HTMLImageElement;
@@ -16,7 +21,7 @@ export class C_User extends HTMLElement {
 	 * Creates a new user element
 	 * @param {User} user the user
 	 */
-	constructor(user: User) {
+	public constructor({user}: {user: User}) {
 		super();
 
 		this.user = user;
@@ -26,7 +31,7 @@ export class C_User extends HTMLElement {
 		this.domUserName = document.createElement("div");
 
 		this.domUserIcon.className = "userIcon";
-		this.domUserIcon.alt = "User icon";
+		this.domUserIcon.alt = "";
 
 		this.update();
 
@@ -41,7 +46,7 @@ export class C_User extends HTMLElement {
 	/**
 	 * Returns the user
 	 */
-	public get getUser(): User {
+	public getUser(): User {
 		return this.user;
 	}
 
@@ -49,18 +54,18 @@ export class C_User extends HTMLElement {
 	 * Updates the user
 	 */
 	public update(): void {
-		if (this.className !== this.user.getUserStatus.toString() || UserStatus.OFFLINE.toString()) {
-			this.className = this.user.getUserStatus.toString() || UserStatus.OFFLINE.toString();
+		if(this.className !== this.user.getStatus().toString() || UserStatus.OFFLINE.toString()) {
+			this.className = this.user.getStatus().toString() || UserStatus.OFFLINE.toString();
 		}
 
-		if (this.domUserName.innerHTML !== clean(this.user.getUserName)) {
-			this.domUserName.innerHTML = clean(this.user.getUserName);
+		if(this.domUserName.innerHTML !== clean(this.user.getName() || "")) {
+			this.domUserName.innerHTML = clean(this.user.getName() || "");
 		}
 
-		if (this.domUserIcon.src !== this.user.getUserIcon ? this.user.getUserIcon : "/resource/img/user.svg") {
-			this.domUserIcon.src = this.user.getUserIcon ? this.user.getUserIcon : "/resource/img/user.svg";
+		if(this.domUserIcon.src !== this.user.getIconURL() ? this.user.getIconURL() : "/resource/img/user.svg") {
+			this.domUserIcon.src = this.user.getIconURL() ? this.user.getIconURL() : "/resource/img/user.svg";
 		}
 
-		this.title = `User ${clean(this.user.getUserName)}`;
+		this.title = `User ${clean(this.user.getName() || "")}`;
 	}
 }

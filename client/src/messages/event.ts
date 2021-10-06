@@ -9,7 +9,7 @@ export abstract class Event extends Response {
 	 * @param {string} type the type of event
 	 * @param {object} data the data of the vent
 	 */
-	constructor(type: string, data: object) {
+	public constructor(type: string, data: object) {
 		super(type, data);
 	}
 }

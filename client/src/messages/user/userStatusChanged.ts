@@ -1,4 +1,4 @@
-import { UserStatus } from "../../interfaces/userStatus";
+import { UserStatus } from "../../interfaces/UserStatus";
 import { UserEvent } from "./userEvent";
 
 /**
@@ -9,7 +9,7 @@ export class UserStatusChanged extends UserEvent {
 	 * Creates a new event
 	 * @param {UserStatus} userStatus the userstatus of the user
 	 */
-	constructor(userStatus: UserStatus) {
+	public constructor(userStatus: UserStatus) {
 		super("UserStatusChanged", {
 			userStatus,
 		});

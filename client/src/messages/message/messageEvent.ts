@@ -8,7 +8,7 @@ export abstract class MessageEvent extends Event {
 	 * @param {string} type the type of event
 	 * @param {object} data the object linked to the event
 	 */
-	constructor(type: string, data: object) {
+	public constructor(type: string, data: object) {
 		super(type, data);
 	}
 }

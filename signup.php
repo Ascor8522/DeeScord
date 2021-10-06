@@ -45,7 +45,10 @@ if (isset($_COOKIE["token"]) && isValidToken($_COOKIE["token"])) {
 			<input id="password" type="password" name="password" autocomplete="new-password" title="Password" required />
 			<label for="password-repeat">Confirm Password:</label>
 			<input id="password-repeat" type="password" name="password-repeat" autocomplete="new-password" title="Confirm password" required />
+			<label for="token">Invite Code:</label>
+			<input id="token" type="text" name="token" title="Invitation Token"/>
 			<input type="submit" name="button" value="Sign up" class="blue" title="Sign up" />
+			<input type="hidden" name="token" value="<?php echo $_GET['token']; ?>" />
 			<a href="/login.php" title="Log in">Log in</a>
 		</form>
 	</main>

@@ -1,35 +1,29 @@
-import { C_Channel } from "./components/c_channel";
-import { C_Convo } from "./components/c_convo";
-import { C_Mention } from "./components/c_mention";
-import { C_Message } from "./components/c_message";
-import { C_Unread } from "./components/c_unread";
-import { C_User } from "./components/c_user";
+import { C_Channel } from "./components/C_Channel";
+import { C_Convo } from "./components/C_Convo";
+import { C_Embed } from "./components/C_Embed";
+import { C_Mention } from "./components/C_Mention";
+import { C_Message } from "./components/C_Message";
+import { C_Unread } from "./components/C_Unread";
+import { C_User } from "./components/C_User";
 
-import { Client } from "./controller/client";
-import { xhr } from "./xhr";
+import { Client } from "./controller/Client";
 
-((): void => {
-	try {
-		customElements.define("c-channel", C_Channel);
-		customElements.define("c-convo", C_Convo);
-		customElements.define("c-mention", C_Mention);
-		customElements.define("c-message", C_Message);
-		customElements.define("c-unread", C_Unread);
-		customElements.define("c-user", C_User);
-	} catch (e) {
-		console.error("Could not define custom elements");
-		alert("[ERROR] This browser doesn't support custom elements. Please use a supported browser.");
-	}
+try {
+	[
+		C_Channel,
+		C_Convo,
+		C_Embed,
+		C_Mention,
+		C_Message,
+		C_Unread,
+		C_User,
+	].forEach((c: {init: () => void}): void => c.init());
+} catch (e) {
+	console.error("Could not define custom elements");
+	alert("[ERROR] This browser doesn't support custom elements. Please use a supported browser.");
+}
 
-	try {
-		const clientWorker: Worker = new Worker("./client/out/controller/client.js");
-	} catch (e) {
-		xhr("POST", window.location.host, "/error.php", {error: e});
-	} finally {
-		const client = new Client();
-	}
-
-})();
+const client = new Client();
 
 /*
 localstorage last read message each channel

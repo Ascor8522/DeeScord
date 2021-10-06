@@ -1,17 +1,20 @@
-import { Channel } from "../interfaces/channel";
-import { Message } from "../interfaces/message";
-import { User } from "../interfaces/user";
-import { UserStatus } from "../interfaces/userStatus";
+import { Channel } from "../interfaces/Channel";
+import { Message } from "../interfaces/Message";
+import { User } from "../interfaces/User";
+import { UserStatus } from "../interfaces/UserStatus";
+import { Ping } from "../messages/ping";
+import { Response } from "../messages/response";
 import { Display } from "../view/display";
-import { xhr } from "../xhr";
 import { EventHandler } from "./events";
 
 /**
  * Represents a client
  */
 export class Client {
-	public readonly host: string = window.document.location.host;
-	public readonly url = {
+	public static version: string = new Date().toLocaleString();
+
+	public static host: string = window.document.location.host;
+	public static url = {
 		channelsList: "/api/channelsList.php",
 		messagesList: "/api/messages.php",
 		usersList: "/api/usersList.php",
@@ -23,72 +26,114 @@ export class Client {
 		},
 	};
 
-	public readonly display: Display = new Display(this);
-	public readonly eventHandler: EventHandler;
+	private display: Display = new Display(this);
+	// @ts-ignore
+	private eventHandler: EventHandler;
 
-	public currentChannelId: number | undefined = undefined;
-	public currentUserId: number = 0;
+	private currentChannelId: number | undefined = undefined;
+	private currentUserId: number = 0;
 
 	// @ts-ignore
-	public socket: WebSocket;
+	private socket: WebSocket;
 
-	private channels: Channel[] = [];
-	private users: User[] = [];
+	private channels: Map<number, Channel> = new Map();
+	private users: Map<number, User> = new Map();
 
 	/**
 	 * Creates a new client
 	 */
-	constructor() {
-		this.display.offline();
-
-		try {
-			this.socket = new WebSocket(`${this.url.socket.protocol}://${this.url.socket.url}${window.document.location.host === "localhost" ? ":" + this.url.socket.port : ""}`);
+	public constructor() {
+		new Promise(() => {
+			console.log(`%cDeescord`, "color: #7289DA; font-size: 60px; text-shadow: -2px 0 black, 0 2px black, 2px 0 black, 0 -2px black; ");
+			console.log(`Compiled ${Client.version}`);
+		})
+		.then(() => this.display.offline())
+		.then(() => {
+			this.socket = new WebSocket(`${Client.url.socket.protocol}://${Client.url.socket.url}${window.document.location.host === "localhost" ? ":" + Client.url.socket.port : ""}`);
 			this.socket.onerror = () => {
 				alert("Disconected from server");
 			};
-		} catch (error) {
-			console.error("Could not create socket");
-		}
-
-		this.eventHandler = new EventHandler(this);
-
-		(async () => {
-			/* GET channels */
-			for (const channel of JSON.parse(await xhr("GET", window.location.host, this.url.channelsList)).data) {
+		})
+		.then((() => this.eventHandler = new EventHandler(this)).bind(this))
+		.then(() => fetch(Client.url.channelsList))
+		.then((response: globalThis.Response) => {
+			if(!response.ok) {
+				throw new Error("");
+			}
+			return response.json() as Promise<{channelId: string, channelName: string, channelTopic: string}[]>;
+		})
+		.then((channels) => {
+			channels.forEach((channel) => {
 				const c: Channel = new Channel(Number.parseInt(channel.channelId, 10), 0, [], channel.channelName, channel.channelTopic);
-				this.channels.push(c);
+				this.channels.set(c.getId(), c);
 				this.display.addChannel(c);
+			});
+		})
+		.then(() => {
+			if(this.channels.size > 0) {
+				return this.joinChannel(Number.parseInt(localStorage.getItem("currentChannelId") || "", 10) || this.channels.values().next().value.getChannelId);
 			}
+			return;
+		})
+		.then(() => fetch(Client.url.usersList))
+		.then((response: globalThis.Response) => {
+			if(!response.ok) {
+				throw new Error("");
+			}
+			return response.json() as Promise<{userIcon: string, userId: string, userName: string, userStatus: UserStatus}[]>;
+		})
+		.then((users) => users.forEach((user) => {
+			const u: User = new User(user.userIcon ? user.userIcon : "", Number.parseInt(user.userId, 10), user.userName, user.userStatus);
+			this.users.set(u.getId(), u);
+			this.display.addUser(u);
+		}))
+		.then(() => {
+			return setInterval((): void => {
+				this.socket.send(JSON.stringify(new Ping()));
+			}, 10000);
+		}
+		.catch((error) => console.error(error));
+	}
 
-			/* GET users */
-			for (const user of JSON.parse(await xhr("GET", window.location.host, this.url.usersList)).data) {
-				const u: User = new User(user.userIcon ? user.userIcon : "", Number.parseInt(user.userId, 10), user.userName, user.userStatus);
-				this.users.push(u);
-				this.display.addUser(u);
-			}
+	public getDisplay(): Display {
+		return this.display;
+	}
 
-			/* Auto join channel */
-			if (this.channels.length > 0) {
-				try {
-					await this.joinChannel(Number.parseInt(localStorage.getItem("currentChannelId") || "", 10) || this.channels[0].getChannelId);
-				} catch (err) {
-					console.error(err);
-				}
-			}
-		})();
+	public getEventHandler(): EventHandler {
+		return this.eventHandler;
+	}
+
+	public getCurrentChannelId(): number | undefined {
+		return this.currentChannelId;
+	}
+
+	public setCurrentChannelId(currentChannelId: number | undefined): void {
+		this.currentChannelId = currentChannelId;
+	}
+
+	public getCurrentUserId(): number {
+		return this.currentUserId;
+	}
+
+	public setCurrentUserId(currentUserId: number): void {
+		this.currentUserId = currentUserId;
+	}
+
+	public getSocket(): WebSocket {
+		return this.socket;
 	}
 
 	/**
 	 * Returns the channels
 	 */
-	public get getChannels(): Channel[] {
+	public getChannels(): Map<number, Channel> {
 		return this.channels;
 	}
 
 	/**
 	 * Returns the users
 	 */
-	public get getUsers(): User[] {
+	public getUsers(): Map<number, User> {
 		return this.users;
 	}
 
@@ -96,8 +141,8 @@ export class Client {
 	 * Returns the current user
 	 */
 	public getCurrentUser(): User {
-		if (this.currentUserId) {
-			return this.users.find((user) => user.getUserId === this.currentUserId)!;
+		if(this.currentUserId) {
+			return this.users.get(this.currentUserId)!;
 		}
 		return new User("", 0, "", UserStatus.ONLINE);
 	}
@@ -106,8 +151,8 @@ export class Client {
 	 * Returns the current channel
 	 */
 	public getCurrentChannel(): Channel | undefined {
-		if (this.currentChannelId || this.currentChannelId === 0) {
-			return this.channels.find((channel) => channel.getChannelId === this.currentChannelId)!;
+		if(this.currentChannelId || this.currentChannelId === 0) {
+			return this.channels.get(this.currentChannelId)!;
 		}
 		return undefined;
 	}
@@ -117,27 +162,35 @@ export class Client {
 	 * @param {number} channelId the channel id to join
 	 */
 	public async joinChannel(channelId: number): Promise<void> {
-		if (this.currentChannelId === channelId) {
-			return;
-		}
 
-		this.currentChannelId = channelId;
-
-		try {
-			window.localStorage.setItem("currentChannelId", channelId.toString());
-		} catch (err) {
-			console.warn("Could not save current channel in localstorage");
-		}
-
-		/* fetch messages from server if no messages (no fetch ever done before) */
-		if (!this.getCurrentChannel()!.getChannelFetched) {
-			this.getCurrentChannel()!.fetch();
-			for (const message of JSON.parse(await xhr("GET", window.location.host, `${this.url.messagesList}?channelId=${channelId}`)).data) {
-				this.getCurrentChannel()!.addMessage(new Message(Number.parseInt(message.messageAuthorId, 10), channelId, message.messageContent, Number.parseInt(message.messageId, 10), Number.parseInt(message.messageTimestamp, 10)));
+		return new Promise((resolve, reject) => {
+			if(this.currentChannelId === channelId) {
+				throw new Error("");
 			}
-		}
-
-		this.display.joinChannel(this.channels.find((channel) => channel.getChannelId === channelId)!);
+		})
+		.then(() => this.currentChannelId = channelId)
+		.then(() => window.localStorage.setItem("currentChannelId", channelId.toString()))
+		.then(() => {
+			/* fetch messages from server if no messages (no fetch ever done before) */
+			if(!this.getCurrentChannel()!.isFetched()) {
+				return this.getCurrentChannel()!.fetch();
+			}
+			return;
+		})
+		.then(() => fetch(`${Client.url.messagesList}?channelId=${channelId}`))
+		.then((response: globalThis.Response) => {
+			if(!response.ok) {
+				throw new Error("");
+			}
+			return response.json() as Promise<{messageAuthorId: string, messageContent: string, messageId: string, messageTimestamp: string}[]>;
+		})
+		.then((messages) => {
+			messages.forEach((message) => {
+				this.getCurrentChannel()!.addMessage(new Message(Number.parseInt(message.messageAuthorId, 10), channelId, message.messageContent, Number.parseInt(message.messageId, 10), Number.parseInt(message.messageTimestamp, 10)));
+			})
+		})
+		.then(() => this.display.joinChannel(this.channels.get(channelId)!))
+		.catch((error) => console.error(error));
 	}
 
 	/**
@@ -145,8 +198,8 @@ export class Client {
 	 * @param {number} userId the user id
 	 */
 	public getUserNameById(userId: number): string {
-		const result: User | undefined = this.users.find((user) => user.getUserId === userId);
-		return result ? result.getUserName : "Unknown user";
+		const result: User | undefined = this.users.get(userId);
+		return result ? result.getName() : "Unknown user";
 	}
 
 	/**
@@ -154,7 +207,8 @@ export class Client {
 	 * @param {number} userId the user id
 	 */
 	public getUserIconById(userId: number): string {
-		const result: User | undefined = this.users.find((user) => user.getUserId === userId);
-		return result ? (result.getUserIcon ? result.getUserIcon : "/resource/img/user.svg") : "/resource/img/user.svg";
+		const result: User | undefined = this.users.get(userId);
+		return result ? (result.getIconURL() ? result.getIconURL() : "/resource/img/user.svg") : "/resource/img/user.svg";
 	}
+
 }

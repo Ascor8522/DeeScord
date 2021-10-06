@@ -8,7 +8,7 @@ export class ChannelDeleted extends ChannelEvent {
 	 * Creates a new event
 	 * @param {number} channelId the id of the deleted channel
 	 */
-	constructor(channelId: number) {
+	public constructor(channelId: number) {
 		super("ChannelDeleted", {
 			channelId,
 		});

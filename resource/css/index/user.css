@@ -59,3 +59,18 @@ c-user.offline>div {
 c-user.offline:hover>div {
 	filter: brightness(100%);
 }
+
+img.userIcon {
+	background-image: url("/resource/img/user.svg");
+}
+
+c-message img.userIcon,
+c-convo img.userIcon {
+    min-height: 40px;
+    min-width: 40px;
+}
+
+c-user img.userIcon {
+    min-height: 30px;
+    min-width: 30px;
+}

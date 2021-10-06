@@ -2,10 +2,15 @@
  * Represents an unread bar
  */
 export class C_Unread extends HTMLElement {
+
+	public static init(): void {
+		customElements.define("c-unread", C_Unread);
+	}
+
 	/**
 	 * Creates a new unread element
 	 */
-	constructor() {
+	public constructor() {
 		super();
 
 		const div1: HTMLDivElement = document.createElement("div");

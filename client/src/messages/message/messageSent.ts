@@ -10,7 +10,7 @@ export class MessageSent extends MessageEvent {
 	 * @param {number} messageChannelId the id of the chanel
 	 * @param {string} messageContent the content of the message
 	 */
-	constructor(messageAuthorId: number, messageChannelId: number, messageContent: string) {
+	public constructor(messageAuthorId: number, messageChannelId: number, messageContent: string) {
 		super("MessageSent", {
 			messageAuthorId,
 			messageChannelId,

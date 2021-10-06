@@ -9,7 +9,7 @@ export class ChannelRenamed extends ChannelEvent {
 	 * @param {number} channelId the id of the channel renamed
 	 * @param {string} channelName the name of the channel
 	 */
-	constructor(channelId: number, channelName: string) {
+	public constructor(channelId: number, channelName: string) {
 		super("ChannelRenamed", {
 			channelId,
 			channelName,

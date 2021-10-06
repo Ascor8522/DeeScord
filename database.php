@@ -64,6 +64,39 @@ function getMessages($channelId) {
 }
 
 /**
+ * Checks if the provided signup token exists and is valid
+ * @param token the token to signup
+ * @return boolean a boolean if the user can signup
+ */
+function signupTokenExists($token) {
+	$pdo = connectDB();
+	$currentTiemstamp = time() * 1000;
+	$stmt = $pdo->prepare(
+		"SELECT signupToken
+		FROM signupTokens
+		WHERE signupToken = :token
+		AND signupTokenExpirationTimestamp >= :expirationTimestamp"
+	);
+	$stmt->bindParam(":token", $token);
+	$stmt->bindParam(":expirationTimestamp", $currentTiemstamp);
+	$stmt->execute();
+	$result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+	
+	if (count($result) > 0) {
+		$stmt = $pdo->prepare(
+			"DELETE FROM signupTokens
+			WHERE signupToken = :token
+			AND signupTokenExpirationTimestamp >= :expirationTimestamp"
+		);
+		$stmt->bindParam(":token", $token);
+		$stmt->bindParam(":expirationTimestamp", $currentTiemstamp);
+		$stmt->execute();
+		return true;
+	}
+	return false;
+}
+
+/**
  * Checks if a login already exists
  * @param userLogin the login to check
  * @return true if the login already exists
@@ -74,6 +107,22 @@ function userLoginExists($userLogin) {
 		"SELECT userLogin
 		FROM users
 		WHERE userLogin = ?");
+	$stmt->execute([$userLogin]);
+	return sizeof($stmt->fetchAll(PDO::FETCH_ASSOC)) != 0;
+}
+
+/**
+ * Checks if a user is banned
+ * @param userLogin the login to check
+ * @return true if the user is banned
+ */
+function userIsBanned($userLogin) {
+	$pdo = connectDB();
+	$stmt = $pdo->prepare(
+		"SELECT userLogin
+		FROM users
+		WHERE userLogin = ?
+		AND userDeleted = 'true'");
 	$stmt->execute([$userLogin]);
 	return sizeof($stmt->fetchAll(PDO::FETCH_ASSOC)) != 0;
 }

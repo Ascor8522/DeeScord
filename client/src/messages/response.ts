@@ -13,7 +13,7 @@ export abstract class Response {
 	 * @param {string} type the type of event
 	 * @param {object} data the data of the event
 	 */
-	constructor(type: string, data: any) {
+	public constructor(type: string, data: any) {
 		this.type = type;
 		this.data = data;
 		this.token = getCookie("token");

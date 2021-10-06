@@ -2,7 +2,7 @@
   "name": "chat",
   "version": "1.0.0",
   "description": "Server part of Deescord app",
-  "main": "index.js",
+  "main": "out/index.js",
   "scripts": {
     "build": "tsc",
     "run": "npm run-script build && cd ./out && node index.js"

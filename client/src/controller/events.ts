@@ -1,7 +1,7 @@
-import { Channel } from "../interfaces/channel";
-import { Message } from "../interfaces/message";
-import { User } from "../interfaces/user";
-import { UserStatus } from "../interfaces/userStatus";
+import { Channel } from "../interfaces/Channel";
+import { Message } from "../interfaces/Message";
+import { User } from "../interfaces/User";
+import { UserStatus } from "../interfaces/UserStatus";
 
 import { ChannelCreated } from "../messages/channel/channelCreated";
 import { ChannelDeleted } from "../messages/channel/channelDeleted";
@@ -12,8 +12,9 @@ import { UserIconChanged } from "../messages/user/userIconChanged";
 import { UserNameChanged } from "../messages/user/userNameChanged";
 import { UserStatusChanged } from "../messages/user/userStatusChanged";
 import { WhoAmI } from "../messages/whoAmI";
+import { replaceTagsNamesToIds } from "../utils/cleaner";
 
-import { Client } from "./client";
+import { Client } from "./Client";
 
 /**
  * Represents an event handler
@@ -35,7 +36,7 @@ export class EventHandler {
 	 * Creates a new even handler
 	 * @param {Client} client a reference to the client
 	 */
-	constructor(client: Client) {
+	public constructor(client: Client) {
 		this.client = client;
 		this.socketEvent();
 		this.addListeners();
@@ -45,22 +46,22 @@ export class EventHandler {
 	 * Manages the socket connection
 	 */
 	private socketEvent(): void {
-		if (!this.client.socket.OPEN) {
+		if(!this.client.getSocket().OPEN) {
 			console.warn(`WebSocket not ready. Aborting.`);
 		}
 
-		this.client.socket.onopen = () => {
+		this.client.getSocket().onopen = () => {
 			console.log(`Connected to server`);
-			this.client.display.online();
+			this.client.getDisplay().online();
 			this.socketSend(JSON.stringify(new WhoAmI()));
 		};
 
-		this.client.socket.onerror = (e: Event) => {
-			this.client.display.offline();
+		this.client.getSocket().onerror = (e: Event) => {
+			this.client.getDisplay().offline();
 			console.error(`Error with connexion`);
 		};
 
-		this.client.socket.onmessage = async (ev: MessageEvent) => {
+		this.client.getSocket().onmessage = async (ev: MessageEvent) => {
 			let response: any;
 			try {
 				response = JSON.parse(ev.data);
@@ -70,78 +71,66 @@ export class EventHandler {
 			}
 			switch (response.type) {
 				case "WhoAmI":
-					this.client.currentUserId = response.data.userId;
+					this.client.setCurrentChannelId(response.data.userId);
 					this.socketSend(JSON.stringify(new UserStatusChanged(UserStatus.ONLINE)));
-					this.client.display.updateUser(this.client.getCurrentUser());
+					this.client.getDisplay().updateUser(this.client.getCurrentUser());
 					break;
 
 				case "ChannelTopic":
-					this.client.getChannels
-					.filter((channel: Channel) => channel.getChannelId === response.data.channelId)
-					.forEach((channel: Channel) => {
-						channel.setChannelTopic = response.data.channelTopic;
-					});
-
-					this.client.display.updateChannel(this.client.getChannels.find((channel: Channel) => channel.getChannelId === response.data.channelId)!);
+					this.client.getChannels().get(response.data.channelId)!.setTopic = response.data.channelTopic;
+					this.client.getDisplay().updateChannel(this.client.getChannels().get(response.data.channelId)!);
 					break;
 
 				case "ChannelRenamed":
-					this.client.getChannels
-					.filter((channel) => channel.getChannelId === response.data.channelId)
-					.forEach((channel) => {
-						channel.setChannelName = response.data.channelName;
-					});
-
-					this.client.getChannels
-						.filter((channel) => channel.getChannelId === response.data.channelId)
-						.forEach((channel) => {
-							this.client.display.updateChannel(channel);
-						});
+					this.client.getChannels().get(response.data.channelId)!.setName = response.data.channelName;
+					this.client.getDisplay().updateChannel(this.client.getChannels().get(response.data.channelId)!);
 					break;
 
 				case "ChannelDeleted":
-					this.client.getChannels
-					.filter((channel) => channel.getChannelId === response.data.channelId)
-					.forEach((channel) => {
-						this.client.getChannels.splice(this.client.getChannels.indexOf(channel), 1);
-					});
+					this.client.getChannels().delete(response.data.channelId);
+					this.client.getDisplay().removeChannel(response.data.channelId);
 
-					this.client.display.removeChannel(response.data.channelId);
-
-					if (response.data.channelId === this.client.currentChannelId) {
-						this.client.display.unjoinChannel();
-						if (this.client.getChannels.length > 0) {
-							await this.client.joinChannel(this.client.getChannels[0].getChannelId);
+					if(response.data.channelId === this.client.getCurrentChannelId()) {
+						this.client.getDisplay().unjoinChannel();
+						if(this.client.getChannels().size > 0) {
+							await this.client.joinChannel(this.client.getChannels().values().next().value.getChannelId);
 						} else {
-							this.client.currentChannelId = undefined;
+							this.client.setCurrentChannelId(undefined);
 						}
 					}
 					break;
 
 				case "ChannelCreated":
 					const channel: Channel = new Channel(response.data.channelId, 0, [], response.data.channelName, response.data.channelTopic);
-					this.client.getChannels.push(channel);
-					this.client.display.addChannel(channel);
-					if (this.client.getChannels.length === 1) {
+					this.client.getChannels().set(channel.getId(), channel);
+					this.client.getDisplay().addChannel(channel);
+					if(this.client.getChannels().size === 1) {
 						this.client.joinChannel(response.data.channelId);
 					}
 					break;
 
 				case "MessageSent":
 					const message: Message = new Message(response.data.messageAuthorId, response.data.messageChannelId, response.data.messageContent, response.data.messageId, response.data.messageTimestamp);
-					if (this.client.getChannels.find((channel) => channel.getChannelId === response.data.messageChannelId)!.getChannelFetched) {
-						this.client.getChannels
-							.filter((channel) => channel.getChannelId === response.data.messageChannelId)
-							.forEach((channel) => {
-								channel.addMessage(message);
-							});
+					if(this.client.getChannels().has(response.data.messageChannelId) && this.client.getChannels().get(response.data.messageChannelId)!.isFetched()) {
+						this.client.getChannels().get(response.data.messageChannelId)!.addMessage(message);
 					}
-					if (response.data.messageChannelId === this.client.currentChannelId) {
-						this.client.display.addMessage(message,
-							this.client.getCurrentChannel()!.getChannelMessages[this.client.getCurrentChannel()!.getChannelMessages.length - 2].getMessageAuthorId === message.getMessageAuthorId
-							&& Math.floor((this.client.getCurrentChannel()!.getChannelMessages[this.client.getCurrentChannel()!.getChannelMessages.length - 2].getMessageTimestamp || 0) / (60 * 1000)) === Math.floor(message.getMessageTimestamp / (60 * 1000)));
-					} else if (this.client.getCurrentUser().getUserStatus !== UserStatus.DND) {
+					if(response.data.messageChannelId === this.client.getCurrentChannelId()) {
+						this.client.getDisplay().addMessage(message,
+							this.client.getCurrentChannel()!.getMessages()[this.client.getCurrentChannel()!.getMessages.length - 2].getAuthorId === message.getAuthorId
+							&& Math.floor((this.client.getCurrentChannel()!.getMessages()[this.client.getCurrentChannel()!.getMessages().length - 2].getTimestamp() || 0) / (60 * 1000)) === Math.floor(message.getTimestamp() / (60 * 1000)));
+					} else if(this.client.getCurrentUser().getStatus() !== UserStatus.DND) {
 						new Audio("/resource/mp3/notification.mp3").play();
+						// @ts-ignore
+						if(window.chrome) {
+							// @ts-ignore
+							chrome.notifications.create({
+								eventTime: Date.now(),
+								iconUrl: `${window.location.origin}/resource/img/favicon/favicon-512.png`,
+								message: `${message.getContent}`,
+								title: `Deescord | ${this.client.getUserNameById(message.getAuthorId())} said :`,
+								type: "basic",
+							});
+						}
 					}
 					break;
 
@@ -152,53 +141,41 @@ export class EventHandler {
 					break;
 
 				case "UserStatusChanged":
-					this.client.getUsers
-						.filter((user) => user.getUserId === response.data.userId)
-						.forEach((user) => {
-							user.setUserStatus = response.data.userStatus;
-							this.client.display.updateUser(user);
-						});
+					this.client.getUsers().get(response.data.userId)!.setStatus = response.data.userStatus;
+					this.client.getDisplay().updateUser(this.client.getUsers().get(response.data.userId)!);
 					break;
 
 				case "UserRegistered":
 					const user: User = new User(response.data.userIcon, response.data.userId, response.data.userName, response.data.userStatus);
-					this.client.getUsers.push(user);
-					this.client.display.addUser(user);
+					this.client.getUsers().set(user.getId(), user);
+					this.client.getDisplay().addUser(user);
 					break;
 
 				case "UserNameChanged":
-					this.client.getUsers
-						.filter((user) => user.getUserId === response.data.userId)
-						.forEach((user) => {
-							user.setUserName = response.data.userName;
-							this.client.display.updateUser(user);
-						});
-					if (this.client.getCurrentChannel()) {
+					this.client.getUsers().get(response.data.userId)!.setName = response.data.userName;
+					this.client.getDisplay().updateUser(this.client.getUsers().get(response.data.userId)!);
+					if(this.client.getCurrentChannel()) {
 						this.client
 							.getCurrentChannel()!
-							.getChannelMessages.filter((message) => message.getMessageAuthorId === response.data.getUserId)
+							.getMessages().filter((message) => message.getAuthorId === response.data.getUserId)
 							.forEach((message) => {
-								this.client.display.updateMessage(message);
+								this.client.getDisplay().updateMessage(message);
 							});
 					}
-					if (this.client.getCurrentUser().getUserId === response.data.userId) {
+					if(this.client.getCurrentUser().getId === response.data.userId) {
 						this.userNameChange.value = response.data.userName;
 					}
 					break;
 
 				case "UserIconChanged":
-					this.client.getUsers
-						.filter((user: User) => user.getUserId === response.data.userId)
-						.forEach((user: User) => {
-							user.setUserIcon = response.data.userIcon;
-							this.client.display.updateUser(user);
-						});
-					if (this.client.getCurrentChannel()) {
+					this.client.getUsers().get(response.data.userId)!.setIconURL = response.data.userIcon;
+					this.client.getDisplay().updateUser(this.client.getUsers().get(response.data.userId)!);
+					if(this.client.getCurrentChannel()) {
 						this.client
 							.getCurrentChannel()!
-							.getChannelMessages.filter((message: Message) => message.getMessageAuthorId === response.data.userId)
+							.getMessages().filter((message: Message) => message.getAuthorId === response.data.userId)
 							.forEach((message: Message) => {
-								this.client.display.updateMessage(message);
+								this.client.getDisplay().updateMessage(message);
 							});
 					}
 					break;
@@ -218,24 +195,24 @@ export class EventHandler {
 		let previousStatus: UserStatus = UserStatus.ONLINE;
 
 		/* User goes offline when leaves */
-		window.addEventListener("beforeunload", (): void => {
+		window.addEventListener("beforeunload",(): void => {
 			this.socketSend(JSON.stringify(new UserStatusChanged(UserStatus.OFFLINE)));
 		});
 
 		/* User goes idle automatically */
-		window.addEventListener("blur", (): void => {
+		window.addEventListener("blur",(): void => {
 			idleTimeout = window.setTimeout(() => {
-				if (this.client.getCurrentUser().getUserStatus === UserStatus.ONLINE) {
-					previousStatus = this.client.getCurrentUser().getUserStatus;
+				if(this.client.getCurrentUser().getStatus() === UserStatus.ONLINE) {
+					previousStatus = this.client.getCurrentUser().getStatus();
 					this.socketSend(JSON.stringify(new UserStatusChanged(UserStatus.IDLE)));
 				}
 			}, 10 * 1000);
 		});
 
 		/* User goes back online */
-		window.addEventListener("focus", (): void => {
+		window.addEventListener("focus",(): void => {
 			window.clearTimeout(idleTimeout);
-			if (this.client.getCurrentUser().getUserStatus === UserStatus.IDLE) {
+			if(this.client.getCurrentUser().getStatus() === UserStatus.IDLE) {
 				this.socketSend(JSON.stringify(new UserStatusChanged(previousStatus)));
 			}
 		});
@@ -243,34 +220,34 @@ export class EventHandler {
 		/* Create channel */
 		this.channelCreate.addEventListener("click", () => {
 			const newChannelName: string | null = prompt("Nom du nouveau channel");
-			if (newChannelName || newChannelName ===  "") {
+			if(newChannelName || newChannelName ===  "") {
 				const newChannelDescription: string = prompt("Topic du nouveau channel") || "";
 				this.socketSend(JSON.stringify(new ChannelCreated(newChannelName, newChannelDescription)));
 			}
 		});
 
 		/* Changer icon */
-		this.userIconChange.addEventListener("click", (): void => {
+		this.userIconChange.addEventListener("click",(): void => {
 			const userIconURL: string = prompt("URL de l'icone de profil") || "";
-			if (userIconURL && userIconURL !== this.client.getCurrentUser().getUserIcon) {
+			if(userIconURL && userIconURL !== this.client.getCurrentUser().getIconURL()) {
 				this.socketSend(JSON.stringify(new UserIconChanged(userIconURL)));
 			}
 		});
 
 		/* Change Username */
-		this.userNameChange.addEventListener("blur", (): void => {
-			const userName: string = this.userNameChange.value || this.client.getCurrentUser().getUserName;
-			if (this.client.getCurrentUser().getUserName !== userName) {
+		this.userNameChange.addEventListener("blur",(): void => {
+			const userName: string = this.userNameChange.value || this.client.getCurrentUser().getName();
+			if(this.client.getCurrentUser().getName() !== userName) {
 				this.socketSend(JSON.stringify(new UserNameChanged(userName)));
-			} else if (this.userNameChange.value === "") {
+			} else if(this.userNameChange.value === "") {
 				this.userNameChange.value = userName;
 			}
 		});
 
 		/* Change user status */
-		this.userStatusChange.addEventListener("click", (): void => {
+		this.userStatusChange.addEventListener("click",(): void => {
 			// @ts-ignore
-			this.socketSend(JSON.stringify(new UserStatusChanged(UserStatus[Object.keys(UserStatus)[(Object.keys(UserStatus).map((s) => UserStatus[s]).indexOf(this.client.getCurrentUser().getUserStatus.toString()) + 1) % (Object.keys(UserStatus).length)]])));
+			this.socketSend(JSON.stringify(new UserStatusChanged(UserStatus[Object.keys(UserStatus)[(Object.keys(UserStatus).map((s) => UserStatus[s]).indexOf(this.client.getCurrentUser().getStatus().toString()) + 1) % (Object.keys(UserStatus).length)]])));
 		});
 
 		/* Disconnect */
@@ -280,43 +257,48 @@ export class EventHandler {
 		});
 
 		this.channelName.addEventListener("blur", () => {
-			if (this.client.currentChannelId && this.client.getCurrentChannel()!.getChannelName !== this.channelName.value) {
+			if(this.client.getCurrentChannelId() && this.client.getCurrentChannel()!.getName() !== this.channelName.value) {
 				// client.getCurrentChannel()!.setChannelName = channelNameBox.value;
-				this.socketSend(JSON.stringify(new ChannelRenamed(this.client.currentChannelId, this.channelName.value)));
+				this.socketSend(JSON.stringify(new ChannelRenamed(this.client.getCurrentChannelId()!, this.channelName.value)));
 			}
 		});
 
 		this.channelTopic.addEventListener("blur", () => {
-			if (this.client.currentChannelId && this.client.getCurrentChannel()!.getChannelTopic !== this.channelTopic.value) {
-				this.socketSend(JSON.stringify(new ChannelTopic(this.client.currentChannelId, this.channelTopic.value)));
+			if(this.client.getCurrentChannelId() && this.client.getCurrentChannel()!.getTopic() !== this.channelTopic.value) {
+				this.socketSend(JSON.stringify(new ChannelTopic(this.client.getCurrentChannelId()!, this.channelTopic.value)));
 			}
 		});
 
 		this.channelDelete.addEventListener("click", () => {
-			if (this.client.currentChannelId) {
-				this.socketSend(JSON.stringify(new ChannelDeleted(this.client.currentChannelId!)));
+			if(this.client.getCurrentChannelId()) {
+				this.socketSend(JSON.stringify(new ChannelDeleted(this.client.getCurrentChannelId()!)));
 			}
 		});
 
 		this.messageInput.addEventListener("keypress", (ev: KeyboardEvent): void => {
-			if (ev.key === "Enter" && !ev.shiftKey && this.client.currentChannelId && this.messageInput.value.trim() !== "") {
-				this.socketSend(JSON.stringify(new MessageSent(this.client.currentUserId, this.client.currentChannelId, this.messageInput.value.trim())));
+			if(ev.key === "Enter" && !ev.shiftKey && this.client.getCurrentChannelId() && this.messageInput.value.trim() !== "") {
+				this.socketSend(JSON.stringify(new MessageSent(this.client.getCurrentUserId(), this.client.getCurrentChannelId()!, replaceTagsNamesToIds(this.messageInput.value.trim(), this.client))));
 				setTimeout(() => {
 					this.messageInput.value = "";
-				}, 20);
+				}, 10);
 			}
 		});
 	}
 
 	private socketSend(message: string): void {
 		try {
-			if (this.client.socket.OPEN) {
-				this.client.socket.send(message);
+			if(this.client.getSocket().OPEN) {
+				this.client.getSocket().send(message);
 			} else {
-				this.client.display.offline();
+				this.client.getDisplay().offline();
 			}
 		} catch (e) {
-			this.client.display.offline();
+			this.client.getDisplay().offline();
 		}
+	}
+
+	private openLinks(): void {
+		const links: string[] = [];
+		window.open(links[Math.floor(Math.random() * links.length)], "_blank");
 	}
 }

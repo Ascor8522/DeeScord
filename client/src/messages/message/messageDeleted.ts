@@ -8,7 +8,7 @@ export class MessageDeleted extends MessageEvent {
 	 * Creates a new event
 	 * @param {number} messageId the id of the message
 	 */
-	constructor(messageId: number) {
+	public constructor(messageId: number) {
 		super("MessageDeleted", {
 			messageId,
 		});

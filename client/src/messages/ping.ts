@@ -1,13 +1,15 @@
 import { Event } from "./event";
 
 /**
- * Ask the server what is the current user
+ * Pings the server
  */
-export class WhoAmI extends Event {
+export class Ping extends Event {
 	/**
 	 * Creates a new event
 	 */
 	public constructor() {
-		super("WhoAmI", {});
+		super("Ping", {
+			timestamp: Date.now(),
+		});
 	}
 }

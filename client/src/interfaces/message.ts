@@ -2,60 +2,60 @@
  * Reprensents a message
  */
 export class Message {
-	private messageAuthorId: number;
-	private messageChannelId: number;
-	private messageContent: string;
-	private messageId: number;
-	private messageTimestamp: number;
+	private authorId: number;
+	private channelId: number;
+	private content: string;
+	private id: number;
+	private timestamp: number;
 
 	/**
 	 * Creates a new message
-	 * @param {number} messageAuthorId the id of the author
-	 * @param {number} messageChannelId the id of the channel the message was sent in
-	 * @param {string} messageContent the content of the message
-	 * @param {number} messageId the if of the message
-	 * @param {number} messageTimestamp the timestamp of the message
+	 * @param {number} authorId the id of the author
+	 * @param {number} channelId the id of the channel the message was sent in
+	 * @param {string} content the content of the message
+	 * @param {number} id the if of the message
+	 * @param {number} timestamp the timestamp of the message
 	 */
-	constructor(messageAuthorId: number = 0, messageChannelId: number = 0, messageContent: string = "Empty Message", messageId: number = 0, messageTimestamp: number = 0) {
-		this.messageChannelId = messageChannelId;
-		this.messageContent = messageContent;
-		this.messageId = messageId;
-		this.messageTimestamp = messageTimestamp;
-		this.messageAuthorId = messageAuthorId;
+	public constructor(authorId: number = 0, channelId: number = 0, content: string = "Empty Message", id: number = 0, timestamp: number = 0) {
+		this.channelId = channelId;
+		this.content = content;
+		this.id = id;
+		this.timestamp = timestamp;
+		this.authorId = authorId;
 	}
 
 	/**
 	 * Returns the id of the author
 	 */
-	public get getMessageAuthorId(): number {
-		return this.messageAuthorId;
+	public getAuthorId(): number {
+		return this.authorId;
 	}
 
 	/**
 	 * Returns the id of the channel
 	 */
-	public get getMessageChannelId(): number {
-		return this.messageChannelId;
+	public getChannelId(): number {
+		return this.channelId;
 	}
 
 	/**
 	 * Returns the content
 	 */
-	public get getMessageContent(): string {
-		return this.messageContent;
+	public getContent(): string {
+		return this.content;
 	}
 
 	/**
 	 * Returns the id of the message
 	 */
-	public get getMessageId(): number {
-		return this.messageId;
+	public getId(): number {
+		return this.id;
 	}
 
 	/**
 	 * Returns the timestamp of the message
 	 */
-	public get getMessageTimestamp(): number {
-		return this.messageTimestamp;
+	public getTimestamp(): number {
+		return this.timestamp;
 	}
 }

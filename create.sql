@@ -1,28 +1,34 @@
 CREATE TABLE IF NOT EXISTS channels (
-  channelId INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
-  channelName TEXT,
-  channelTopic TEXT,
-  channelTimestamp INTEGER NOT NULL,
-  channelDeleted TEXT NOT NULL
+  'id' INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
+  'name' TEXT,
+  'topic' TEXT,
+  'timestamp' INTEGER NOT NULL,
+  'deleted' TEXT NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS messages (
-  messageId INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
-  messageChannelId INTEGER NOT NULL,
-  messageAuthorId INTEGER NOT NULL,
-  messageContent TEXT,
-  messageTimestamp INTEGER NOT NULL,
-  messageDeleted TEXT NOT NULL
+  'id' INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
+  'channelId' INTEGER NOT NULL,
+  'authorId' INTEGER NOT NULL,
+  'content' TEXT,
+  'timestamp' INTEGER NOT NULL,
+  'deleted' TEXT NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS users (
-  userId INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
-  userLogin TEXT NOT NULL UNIQUE,
-  userJoinTimestamp INTEGER NOT NULL,
-  userPassword TEXT NOT NULL,
-  userToken TEXT,
-  userName TEXT NOT NULL,
-  userStatus TEXT NOT NULL,
-  userIcon TEXT,
-  userDeleted TEXT NOT NULL
+  'id' INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
+  'login' TEXT NOT NULL UNIQUE,
+  'joinTimestamp' INTEGER NOT NULL,
+  'password' TEXT NOT NULL,
+  'token' TEXT,
+  'name' TEXT NOT NULL,
+  'status' TEXT NOT NULL,
+  'iconURL' TEXT,
+  'deleted' TEXT NOT NULL
+);
+
+CREATE TABLE signupTokens (
+  'tokenId' INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
+  'token' TEXT NOT NULL,
+  'tokenExpirationTimestamp' INTEGER NOT NULL
 );

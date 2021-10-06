@@ -1,11 +1,11 @@
-import { C_Channel } from "../components/c_channel";
-import { C_Convo } from "../components/c_convo";
-import { C_Message } from "../components/c_message";
-import { C_User } from "../components/c_user";
-import { Client } from "../controller/client";
-import { Channel } from "../interfaces/channel";
-import { Message } from "../interfaces/message";
-import { User } from "../interfaces/user";
+import { C_Channel } from "../components/C_Channel";
+import { C_Convo } from "../components/C_Convo";
+import { C_Message } from "../components/C_Message";
+import { C_User } from "../components/C_User";
+import { Client } from "../controller/Client";
+import { Channel } from "../interfaces/Channel";
+import { Message } from "../interfaces/Message";
+import { User } from "../interfaces/User";
 
 /**
  * Represents a disply class
@@ -31,7 +31,7 @@ export class Display {
 	 * Creates a new display object
 	 * @param {Client} client a reference to the client
 	 */
-	constructor(client: Client) {
+	public constructor(client: Client) {
 		this.client = client;
 	}
 
@@ -68,9 +68,9 @@ export class Display {
 	 * @param {Channel} channel the channel to add
 	 */
 	public addChannel(channel: Channel): void {
-		this.channelsList.appendChild(new C_Channel(channel, this.client));
+		this.channelsList.appendChild(new C_Channel({channel, client: this.client}));
 
-		if (this.client.getChannels.length === 1) {
+		if(this.client.getChannels().size === 1) {
 			this.channelDelete.removeAttribute("disabled");
 			this.channelName.removeAttribute("disabled");
 			this.channelTopic.removeAttribute("disabled");
@@ -83,12 +83,12 @@ export class Display {
 	 */
 	public removeChannel(channelId: number): void {
 		this.toArray(this.channelsList.childNodes)
-		.filter((cChannel: HTMLElement) => cChannel instanceof C_Channel && cChannel.getChannel.getChannelId === channelId)
+		.filter((cChannel: HTMLElement) => cChannel instanceof C_Channel && cChannel.getChannel().getId() === channelId)
 		.forEach((cChannel: C_Channel) => {
 			this.channelsList.removeChild(cChannel);
 		});
 
-		if (this.client.getChannels.length === 0) {
+		if(this.client.getChannels().size === 0) {
 			this.channelDelete.setAttribute("disabled", "");
 			this.channelName.setAttribute("disabled", "");
 			this.channelTopic.setAttribute("disabled", "");
@@ -101,14 +101,14 @@ export class Display {
 	 */
 	public updateChannel(channel: Channel): void {
 		this.toArray(this.channelsList.childNodes)
-		.filter((cChannel: HTMLElement) => cChannel instanceof C_Channel && cChannel.getChannel.getChannelId === channel.getChannelId)
+		.filter((cChannel: HTMLElement) => cChannel instanceof C_Channel && cChannel.getChannel().getId() === channel.getId())
 		.forEach((cChannel: C_Channel) => {
 			cChannel.update();
 		});
 
-		if (channel.getChannelId === this.client.currentChannelId) {
-			this.channelName.value = channel.getChannelName;
-			this.channelTopic.value = channel.getChannelTopic;
+		if(channel.getId() === this.client.getCurrentChannelId()) {
+			this.channelName.value = channel.getName();
+			this.channelTopic.value = channel.getTopic();
 		}
 	}
 
@@ -119,25 +119,25 @@ export class Display {
 	public joinChannel(channel: Channel): void {
 		this.unjoinChannel();
 
-		this.channelName.value = channel.getChannelName;
-		this.channelTopic.value = channel.getChannelTopic;
+		this.channelName.value = channel.getName();
+		this.channelTopic.value = channel.getTopic();
 
 		this.toArray(this.channelsList.childNodes)
-		.filter((cChannel: HTMLElement) => cChannel instanceof C_Channel && cChannel.getChannel.getChannelId === channel.getChannelId)
+		.filter((cChannel: HTMLElement) => cChannel instanceof C_Channel && cChannel.getChannel().getId() === channel.getId())
 		.forEach((cChannel: C_Channel) => {
 			cChannel.enable();
 		});
 
 		let previousMessageAuthor: number | null = null;
 		let previousMessageTimestamp: number | null = null;
-		channel.getChannelMessages.forEach((message) => {
-			this.addMessage(message, message.getMessageAuthorId === previousMessageAuthor && Math.floor(message.getMessageTimestamp / (60 * 1000)) === Math.floor((previousMessageTimestamp || 0) / (60 * 1000)));
-			previousMessageAuthor = message.getMessageAuthorId;
-			previousMessageTimestamp = message.getMessageTimestamp;
+		channel.getMessages().forEach((message) => {
+			this.addMessage(message, message.getAuthorId() === previousMessageAuthor && Math.floor(message.getTimestamp() / (60 * 1000)) === Math.floor((previousMessageTimestamp || 0) / (60 * 1000)));
+			previousMessageAuthor = message.getAuthorId();
+			previousMessageTimestamp = message.getTimestamp();
 		});
 
 		this.toArray(this.channelsList.childNodes)
-		.filter((cChannel: HTMLElement) => cChannel instanceof C_Channel && cChannel.getChannel.getChannelId === channel.getChannelId)
+		.filter((cChannel: HTMLElement) => cChannel instanceof C_Channel && cChannel.getChannel().getId() === channel.getId())
 		.forEach((cChannel: C_Channel) => {
 			cChannel.enable();
 		});
@@ -167,10 +167,10 @@ export class Display {
 	 * @param {boolean} sameAuthor true if the author of the previous message is the same
 	 */
 	public addMessage(message: Message, sameAuthor: boolean): void {
-		if (sameAuthor) {
-			this.messagesList.appendChild(new C_Convo(message, this.client));
+		if(sameAuthor) {
+			this.messagesList.appendChild(new C_Convo({message, client: this.client}));
 		} else {
-			this.messagesList.appendChild(new C_Message(message, this.client));
+			this.messagesList.appendChild(new C_Message({message, client: this.client}));
 		}
 		this.messagesList.scrollTo(0, this.messagesList.scrollHeight);
 	}
@@ -181,7 +181,7 @@ export class Display {
 	 */
 	public removeMessage(messageId: number): void {
 		this.toArray(this.messagesList.childNodes)
-		.filter((cMessage: HTMLElement) => (cMessage instanceof C_Message || cMessage instanceof C_Convo) && cMessage.getMessage.getMessageId === messageId)
+		.filter((cMessage: HTMLElement) => (cMessage instanceof C_Message || cMessage instanceof C_Convo) && cMessage.getMessage().getId() === messageId)
 		.forEach((cMessage: C_Message | C_Convo) => {
 			this.messagesList.removeChild(cMessage);
 		});
@@ -193,7 +193,7 @@ export class Display {
 	 */
 	public updateMessage(message: Message): void {
 		this.toArray(this.messagesList.childNodes)
-		.filter((cMessage: HTMLElement) => (cMessage instanceof C_Message || cMessage instanceof C_Convo) && cMessage.getMessage.getMessageId === message.getMessageId)
+		.filter((cMessage: HTMLElement) => (cMessage instanceof C_Message || cMessage instanceof C_Convo) && cMessage.getMessage().getId() === message.getId())
 		.forEach((cMessage: C_Message | C_Convo) => {
 			cMessage.update();
 		});
@@ -204,7 +204,7 @@ export class Display {
 	 * @param {User} user the user to add
 	 */
 	public addUser(user: User): void {
-		this.usersList.appendChild(new C_User(user));
+		this.usersList.appendChild(new C_User({user}));
 	}
 
 	/**
@@ -213,7 +213,7 @@ export class Display {
 	 */
 	public removeUser(userId: number): void {
 		this.toArray(this.usersList.childNodes)
-		.filter((cUser: HTMLElement) => cUser instanceof C_User && cUser.getUser.getUserId === userId)
+		.filter((cUser: HTMLElement) => cUser instanceof C_User && cUser.getUser().getId() === userId)
 		.forEach((cUser: C_User) => {
 			this.usersList.removeChild(cUser);
 		});
@@ -225,26 +225,26 @@ export class Display {
 	 */
 	public updateUser(user: User): void {
 		this.toArray(this.usersList.childNodes)
-		.filter((cUser: HTMLElement) => cUser instanceof C_User && cUser.getUser.getUserId === user.getUserId)
+		.filter((cUser: HTMLElement) => cUser instanceof C_User && cUser.getUser().getId() === user.getId())
 		.forEach((cUser: C_User) => {
 			cUser.update();
 		});
 
 		this.toArray(this.messagesList.childNodes)
-		.filter((cMessage: HTMLElement) => cMessage instanceof C_Message && cMessage.getMessage.getMessageAuthorId === user.getUserId)
+		.filter((cMessage: HTMLElement) => cMessage instanceof C_Message && cMessage.getMessage().getAuthorId() === user.getId())
 		.forEach((cMessage: C_Message) => {
 			cMessage.update();
 		});
 
-		if (user === this.client.getCurrentUser()) {
-			if (this.client.getCurrentUser().getUserIcon && this.userIconChange.src !== this.client.getCurrentUser().getUserIcon) {
-				this.userIconChange.src = this.client.getCurrentUser().getUserIcon;
+		if(user === this.client.getCurrentUser()) {
+			if(this.client.getCurrentUser().getIconURL() && this.userIconChange.src !== this.client.getCurrentUser().getIconURL()) {
+				this.userIconChange.src = this.client.getCurrentUser().getIconURL();
 			}
-			if (this.userNameChange.value !== this.client.getCurrentUser().getUserName) {
-				this.userNameChange.value = this.client.getCurrentUser().getUserName;
+			if(this.userNameChange.value !== this.client.getCurrentUser().getName()) {
+				this.userNameChange.value = this.client.getCurrentUser().getName();
 			}
-			if (this.userStatusChange.style.backgroundColor !== `var(--${this.client.getCurrentUser().getUserStatus})`) {
-				this.userStatusChange.style.backgroundColor = `var(--${this.client.getCurrentUser().getUserStatus})`;
+			if(this.userStatusChange.style.backgroundColor !== `var(--${this.client.getCurrentUser().getStatus()})`) {
+				this.userStatusChange.style.backgroundColor = `var(--${this.client.getCurrentUser().getStatus()})`;
 			}
 		}
 	}

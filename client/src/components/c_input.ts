@@ -7,7 +7,7 @@ export class C_Input extends HTMLElement {
 	 * @param {string} message the message to display
 	 * @param {Function} callback the callback function to execute when the button is pressed
 	 */
-	constructor(message: string, callback: (answer: string) => void) {
+	public constructor({message, callback}: {message: string, callback: (answer: string) => void}) {
 		super();
 	}
 }

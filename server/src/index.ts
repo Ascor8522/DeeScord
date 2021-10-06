@@ -1,6 +1,8 @@
 import * as sqlite3 from "sqlite3";
 import * as WebSocket from "ws";
 import * as db from "./database";
+import { UserStatus } from "./interfaces/userStatus";
+import { Ping } from "./messages/ping";
 import { WhoAmI } from "./messages/whoAmI";
 
 let wss: WebSocket.Server;
@@ -17,6 +19,33 @@ const database: sqlite3.Database = new sqlite3.Database("./../../database.sqlite
 	}, async (): Promise<void> => {
 
 		console.log(`${new Date().toLocaleString()} Server online`);
+
+		type connectedUser = {
+			userId: number,
+			lastSeen: number,
+		};
+
+		let onlineUsers: connectedUser[] = [];
+		const timeout: number = 30000;
+
+		setInterval((): void => {
+			const offlineUsers: connectedUser[] = [];
+			const stillConneted: connectedUser[] = [];
+
+			onlineUsers.forEach((user: connectedUser) => {
+				if (Date.now() - user.lastSeen > timeout) {
+					offlineUsers.push(user);
+				} else {
+					stillConneted.push(user);
+				}
+			});
+
+			onlineUsers = stillConneted;
+			offlineUsers.forEach(async (user: connectedUser): Promise<void> => {
+				broadcast(wss, await db.changeUserStatus(database, user.userId, UserStatus.OFFLINE));
+			});
+
+		}, timeout);
 
 		wss.on("connection", (connection) => {
 
@@ -35,8 +64,15 @@ const database: sqlite3.Database = new sqlite3.Database("./../../database.sqlite
 				}
 
 				const userId: number = await db.getUserIdWithToken(database, message.token);
+				if (onlineUsers.some((user: connectedUser): boolean => user.userId === userId)) {
+					onlineUsers.push({userId, lastSeen: Date.now()});
+				}
 
 				switch (message.type || "") {
+					case "Ping":
+						connection.send(JSON.stringify(new Ping(Math.abs(Date.now() - message.data.timestamp))));
+						break;
+
 					case "WhoAmI":
 						connection.send(JSON.stringify(new WhoAmI(userId)));
 						break;
@@ -81,7 +117,6 @@ const database: sqlite3.Database = new sqlite3.Database("./../../database.sqlite
 					case "UserStatusChanged":
 						broadcast(wss, await db.changeUserStatus(database, userId, message.data.userStatus));
 						break;
-
 				}
 
 			});

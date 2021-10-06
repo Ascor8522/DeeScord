@@ -5,17 +5,22 @@
 	if (isset($_POST["button"])) {
 
 		if (empty($_POST["login"]) || empty($_POST["password"]) || empty($_POST["password-repeat"])) {
-			echo "Error, empty parameters";
+			echo "Error.<br>Empty parameters.";
 			exit();
 		}
-
+		
 		if (userLoginExists($_POST["login"])) {
-			echo "Error, login already exists";
+			echo "Error.<br>Login already exists.";
+			exit();
+		}
+		
+		if ($_POST["password"] != $_POST["password-repeat"]) {
+			echo "Error.<br>Passwords do not match.";
 			exit();
 		}
 
-		if ($_POST["password"] != $_POST["password-repeat"]) {
-			echo "Error, passwords do not match";
+		if (!signupTokenExists($_POST["token"])) {
+			echo "Error.<br>Invalid token. Please use the provided link to sign up.";
 			exit();
 		}
 

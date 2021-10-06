@@ -1,11 +1,16 @@
-import { Client } from "../controller/client";
-import { Channel } from "../interfaces/channel";
+import { Client } from "../controller/Client";
+import { Channel } from "../interfaces/Channel";
 import { clean } from "../utils/cleaner";
 
 /**
  * Represents a channel element
  */
 export class C_Channel extends HTMLElement {
+
+	public static init(): void {
+		customElements.define("c-channel", C_Channel);
+	}
+
 	private channel: Channel;
 	private domChannelName: HTMLSpanElement;
 
@@ -14,7 +19,7 @@ export class C_Channel extends HTMLElement {
 	 * @param {Channel} channel the channel
 	 * @param {Client} client a reference to the client
 	 */
-	constructor(channel: Channel, client: Client) {
+	public constructor({channel, client}: {channel: Channel, client: Client}) {
 		super();
 
 		this.setAttribute("contextmenu", "channelMenu");
@@ -31,15 +36,15 @@ export class C_Channel extends HTMLElement {
 		this.appendChild(div1);
 		this.appendChild(this.domChannelName);
 
-		this.addEventListener("mousedown", (): void => {
-			client.joinChannel(this.channel.getChannelId);
+		this.addEventListener("mousedown", async(): Promise<void> => {
+			return client.joinChannel(this.channel.getId());
 		});
 	}
 
 	/**
 	 * Returns the channel object
 	 */
-	public get getChannel(): Channel {
+	public getChannel(): Channel {
 		return this.channel;
 	}
 
@@ -47,11 +52,11 @@ export class C_Channel extends HTMLElement {
 	 * Updates the element
 	 */
 	public update(): void {
-		if (this.domChannelName.innerHTML !== clean(this.channel.getChannelName)) {
-			this.domChannelName.innerHTML = clean(this.channel.getChannelName);
+		if(this.domChannelName.innerHTML !== clean(this.channel.getName())) {
+			this.domChannelName.innerHTML = clean(this.channel.getName());
 		}
 
-		this.title = `Channel ${clean(this.channel.getChannelName)}`;
+		this.title = `Channel ${clean(this.channel.getName())}`;
 	}
 
 	/**

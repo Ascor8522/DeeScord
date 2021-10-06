@@ -12,6 +12,11 @@
 		exit();
 	}
 
+	if (userIsBanned($_POST["login"])) {
+		echo "Error, you have been banned";
+		exit();
+	}
+
 	if (hash("sha256", $_POST["password"].getUserTimestamp($_POST["login"]), false) != getUserPassword($_POST["login"])) {
 		echo "Error, wrong password";
 		exit();

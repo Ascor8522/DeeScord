@@ -1,26 +1,32 @@
-import { Client } from "../controller/client";
-import { Message } from "../interfaces/message";
-import { clean, format, replaceTagsIdsToNames } from "../utils/cleaner";
+import { Client } from "../controller/Client";
+import { Message } from "../interfaces/Message";
+import { clean, extractLinks, format, replaceTagsIdsToNames } from "../utils/cleaner";
+import { C_Embed } from "./C_Embed";
 
 /**
  * Represents a message
  */
 export class C_Message extends HTMLElement {
-	private client: Client;
 
+	public static init(): void {
+		customElements.define("c-message", C_Message);
+	}
+
+	private client: Client;
 	private message: Message;
 
 	private domMessageAuthorIcon: HTMLImageElement;
 	private domMessageAuthor: HTMLSpanElement;
 	private domMessageTimestamp: HTMLSpanElement;
 	private domMessageContent: HTMLDivElement;
+	private domMessageEmbeds: HTMLDivElement;
 
 	/**
 	 * Creates a new message
 	 * @param {Message} message the message
 	 * @param {Client} client a reference to the client
 	 */
-	constructor(message: Message, client: Client) {
+	public constructor({message, client}: {message: Message, client: Client}) {
 		super();
 
 		this.client = client;
@@ -31,13 +37,14 @@ export class C_Message extends HTMLElement {
 		this.domMessageAuthor = document.createElement("span");
 		this.domMessageTimestamp = document.createElement("span");
 		this.domMessageContent = document.createElement("div");
+		this.domMessageEmbeds = document.createElement("div");
 
-		if (this.message.getMessageAuthorId === this.client.currentUserId) {
+		if(this.message.getAuthorId() === this.client.getCurrentUserId()) {
 			this.classList.add("own");
 		}
 
 		this.domMessageAuthorIcon.className = "userIcon";
-		this.domMessageAuthorIcon.alt = "/resource/img/user.svg";
+		this.domMessageAuthorIcon.alt = "";
 
 		this.domMessageAuthor.className = "messageAuthor";
 
@@ -62,7 +69,7 @@ export class C_Message extends HTMLElement {
 	/**
 	 * Returns the message
 	 */
-	public get getMessage(): Message {
+	public getMessage(): Message {
 		return this.message;
 	}
 
@@ -70,23 +77,28 @@ export class C_Message extends HTMLElement {
 	 * Updates the message
 	 */
 	public update(): void {
-		if (this.domMessageAuthor.innerHTML !== clean(this.client.getUserNameById(this.message.getMessageAuthorId))) {
-			this.domMessageAuthor.innerHTML = clean(this.client.getUserNameById(this.message.getMessageAuthorId));
+		if(this.domMessageAuthor.innerHTML !== clean(this.client.getUserNameById(this.message.getAuthorId()))) {
+			this.domMessageAuthor.innerHTML = clean(this.client.getUserNameById(this.message.getAuthorId()));
 		}
 
-		if (this.domMessageTimestamp.innerText !== this.displayDate(this.message.getMessageTimestamp)) {
-			this.domMessageTimestamp.innerText = this.displayDate(this.message.getMessageTimestamp);
+		if(this.domMessageTimestamp.innerText !== this.displayDate(this.message.getTimestamp())) {
+			this.domMessageTimestamp.innerText = this.displayDate(this.message.getTimestamp());
 		}
 
-		if (this.domMessageAuthorIcon.src !== this.client.getUserIconById(this.message.getMessageAuthorId)) {
-			this.domMessageAuthorIcon.src = this.client.getUserIconById(this.message.getMessageAuthorId);
+		if(this.domMessageAuthorIcon.src !== this.client.getUserIconById(this.message.getAuthorId())) {
+			this.domMessageAuthorIcon.src = this.client.getUserIconById(this.message.getAuthorId());
 		}
 
-		if (this.domMessageContent.innerHTML !== replaceTagsIdsToNames(format(clean(this.message.getMessageContent)), this.client)) {
-			this.domMessageContent.innerHTML = replaceTagsIdsToNames(format(clean(this.message.getMessageContent)), this.client);
+		if(this.domMessageContent.innerHTML !== replaceTagsIdsToNames(format(clean(this.message.getContent())), this.client)) {
+			this.domMessageContent.innerHTML = replaceTagsIdsToNames(format(clean(this.message.getContent())), this.client);
 		}
 
-		this.title = `Sent ${this.displayDate(this.message.getMessageTimestamp)} by ${clean(this.client.getUserNameById(this.message.getMessageAuthorId))}`;
+		Array.from(this.domMessageEmbeds.children).forEach((child: Element): void => {
+			this.domMessageEmbeds.removeChild(child);
+		});
+		this.extractEmbeds();
+
+		this.title = `Sent ${this.displayDate(this.message.getTimestamp())} by ${clean(this.client.getUserNameById(this.message.getAuthorId()))}`;
 	}
 
 	/**
@@ -119,5 +131,17 @@ export class C_Message extends HTMLElement {
 				return `${date.toLocaleDateString()} at ${date.toLocaleTimeString().slice(0, -3)}`;
 		}
 		return str;
+	}
+
+	/**
+	 * Extract embeds in the message content
+	 */
+	private extractEmbeds() {
+		const links = extractLinks(this.message.getContent());
+		if(links) {
+			for (const link of links) {
+				this.domMessageEmbeds.appendChild(new C_Embed({ color: "#ff0000", author: link, url: link, title: "test", description: "test description", fields: null, imageURL: null, footer: null }));
+			}
+		}
 	}
 }

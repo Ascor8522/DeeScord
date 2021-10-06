@@ -9,7 +9,7 @@ export class ChannelTopic extends ChannelEvent {
 	 * @param {number} channelId the id of the channal
 	 * @param {string} channelTopic the topic of the channel
 	 */
-	constructor(channelId: number, channelTopic: string) {
+	public constructor(channelId: number, channelTopic: string) {
 		super("ChannelTopic", {
 			channelId,
 			channelTopic,

@@ -1,13 +1,17 @@
-import { Client } from "../controller/client";
-import { User } from "../interfaces/user";
+import { Client } from "../controller/Client";
+import { User } from "../interfaces/User";
 import { clean } from "../utils/cleaner";
 
 export class C_Mention extends HTMLElement {
-	private client: Client;
 
+	public static init(): void {
+		customElements.define("c-mention", C_Mention);
+	}
+
+	private client: Client;
 	private user: User | "everyone";
 
-	constructor(user: User | "everyone", client: Client) {
+	public constructor({user, client}: {user: User | "everyone", client: Client}) {
 		super();
 
 		this.client = client;
@@ -17,15 +21,15 @@ export class C_Mention extends HTMLElement {
 		this.update();
 	}
 
-	public get getUser(): User | "everyone" {
+	public getUser(): User | "everyone" {
 		return this.user;
 	}
 
 	public update(): void {
-		if (this.innerHTML !== `@${clean(typeof this.user === "string" ? "everyone" : this.user.getUserName)}`) {
-			this.innerHTML = `@${clean(typeof this.user === "string" ? "everyone" : this.user.getUserName)}`;
+		if(this.innerHTML !== `@${this.user === "everyone" ?  "everyone" : clean(this.user.getName())}`) {
+			this.innerHTML = `@${this.user === "everyone" ?  "everyone" : clean(this.user.getName())}`;
 		}
 
-		this.className = this.user === "everyone" || this.user.getUserId === this.client.getCurrentUser().getUserId ? "me" : "";
+		this.className = ((this.user === "everyone") || (this.user.getId === this.client.getCurrentUser().getId)) ? "me" : "";
 	}
 }

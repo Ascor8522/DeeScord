@@ -266,37 +266,45 @@ c-mention:hover {
 	z-index: 10;
 }
 
-c-message.own c-mention:not(.me) {
+c-message.own c-mention:not(.me),
+c-convo.own c-mention:not(.me) {
 	background-color: var(--accentDarker);
 }
 
-c-message.own c-mention:not(.me):hover {
+c-message.own c-mention:not(.me):hover,
+c-convo.own c-mention:not(.me):hover {
 	background-color: var(--accentLighter);
 }
 
-c-message.own c-mention.me {
+c-message.own c-mention.me,
+c-convo.own c-mention.me {
 	background-color: var(--accentDarkest);
 	color: var(--text);
 }
 
-c-message.own c-mention.me:hover {
+c-message.own c-mention.me:hover,
+c-convo.own c-mention.me:hover {
 	background-color: var(--accentLighter);
 }
 
-c-message:not(.own) c-mention:not(.me) {
+c-message:not(.own) c-mention:not(.me),
+c-convo:not(.own) c-mention:not(.me) {
 	background-color: var(--main);
 }
 
-c-message:not(.own) c-mention:not(.me):hover {
+c-message:not(.own) c-mention:not(.me):hover,
+c-convo:not(.own) c-mention:not(.me):hover {
 	background-color: var(--lighter);
 	color: var(--darkest);
 }
 
-c-message:not(.own) c-mention.me {
+c-message:not(.own) c-mention.me,
+c-convo:not(.own) c-mention.me {
 	background-color: var(--accentDarker);
 }
 
-c-message:not(.own) c-mention.me:hover {
+c-message:not(.own) c-mention.me:hover,
+c-convo:not(.own) c-mention.me:hover {
 	background-color: var(--accent);
 }
 
